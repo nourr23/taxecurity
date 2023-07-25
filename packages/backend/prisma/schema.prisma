@@ -10,24 +10,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id Int @id  @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  phone_number String @unique
-  email String
-  hash String
-  firstName String
-  lastName String
-  age Int?
-  city String?
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  phone_number String   @unique
+  email        String?  @unique
+  hash         String
+  firstName    String
+  lastName     String
+  age          Int?
+  city         String?
+
+  alerts Alert[]
+
+  @@map("User")
 }
 
 model Alert {
-  id Int @id  @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  status String
-  type String?
+  status    String
+  type      String?
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("Alert")
 }
