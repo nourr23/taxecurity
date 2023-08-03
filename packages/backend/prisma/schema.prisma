@@ -21,8 +21,11 @@ model User {
   lastName     String
   age          Int?
   city         String?
+  taxi_number  Int?
 
-  alerts Alert[]
+  alerts     Alert[]
+  followedBy User[]  @relation("UserFollows")
+  following  User[]  @relation("UserFollows")
 
   @@map("User")
 }

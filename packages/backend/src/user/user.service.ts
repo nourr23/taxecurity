@@ -1,6 +1,7 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EditUserDto } from './dto';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -14,6 +15,8 @@ export class UserService {
         firstName: true,
         age: true,
         city: true,
+        followedBy: true,
+        following: true,
       },
     });
     return users;
@@ -62,6 +65,59 @@ export class UserService {
         },
       });
       return 'done'; // to refactor
+    } catch (error) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Could not find user',
+      });
+    }
+  }
+
+  async acceptRequest(userId: number, followerId: number) {
+    try {
+      const follower = await this.prisma.user.findUnique({
+        where: {
+          id: followerId,
+        },
+      });
+      const user = await this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          followedBy: {
+            connect: follower,
+          },
+          firstName: 'nour',
+        },
+      });
+      return user;
+    } catch (error) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Could not find user',
+      });
+    }
+  }
+  async removeFromList(userId: number, followerId: number) {
+    try {
+      const follower = await this.prisma.user.findUnique({
+        where: {
+          id: followerId,
+        },
+      });
+      const user = await this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          followedBy: {
+            disconnect: follower,
+          },
+          firstName: 'nour',
+        },
+      });
+      return user;
     } catch (error) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
