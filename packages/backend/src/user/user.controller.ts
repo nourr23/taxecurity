@@ -24,16 +24,16 @@ export class UserController {
   }
 
   @UseGuards(JwtGuard)
+  @Get('me')
+  getMe(@GetUser() user: User) {
+    return user;
+  }
+
+  @UseGuards(JwtGuard)
   @Get(':id')
   getUserById(@Param('id') id: string) {
     const userId = parseInt(id);
     return this.userService.getUserById(userId);
-  }
-
-  @UseGuards(JwtGuard)
-  @Get('me')
-  getMe(@GetUser() user: User) {
-    return user;
   }
 
   @UseGuards(JwtGuard)
@@ -46,24 +46,32 @@ export class UserController {
   @Delete(':id')
   removeUser(@Param('id') id: string) {
     const userId = parseInt(id);
-    return this.userService.removeUser(userId);
+    return this.userService.removeUser(userId); // to refactor; only the admin can delete a user
   }
 
   @UseGuards(JwtGuard)
-  @Patch('add_follower/:id')
+  @Patch('add_follower')
   addFollower(
-    @Param('id', ParseIntPipe) id: number,
+    @GetUser('id') userId: number,
     @Body('followerId', ParseIntPipe) followerId: number,
   ) {
-    this.userService.acceptRequest(id, followerId);
+    this.userService.acceptRequest(userId, followerId);
   }
 
   @UseGuards(JwtGuard)
-  @Patch('add_follower/:id')
+  @Patch('remove_follower')
   removeFollower(
-    @Param('id', ParseIntPipe) id: number,
+    @GetUser('id') userId: number,
     @Body('followerId', ParseIntPipe) followerId: number,
   ) {
-    this.userService.removeFromList(id, followerId);
+    this.userService.removeFromList(userId, followerId);
+  }
+  @UseGuards(JwtGuard)
+  @Patch('unfollow')
+  unfollow(
+    @GetUser('id') userId: number,
+    @Body('followerId', ParseIntPipe) followerId: number,
+  ) {
+    return this.userService.unfollow(userId, followerId);
   }
 }

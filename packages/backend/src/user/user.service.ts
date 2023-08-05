@@ -9,6 +9,7 @@ export class UserService {
   async getAllUsers() {
     const users = await this.prisma.user.findMany({
       select: {
+        id: true,
         email: true,
         phone_number: true,
         lastName: true,
@@ -17,6 +18,16 @@ export class UserService {
         city: true,
         followedBy: true,
         following: true,
+        requestReceived: {
+          select: {
+            sender: true,
+          },
+        },
+        requestSent: {
+          select: {
+            receiver: true,
+          },
+        },
       },
     });
     return users;
@@ -27,8 +38,28 @@ export class UserService {
         where: {
           id: id,
         },
+        select: {
+          id: true,
+          email: true,
+          phone_number: true,
+          lastName: true,
+          firstName: true,
+          age: true,
+          city: true,
+          followedBy: true,
+          following: true,
+          requestReceived: {
+            select: {
+              sender: true,
+            },
+          },
+          requestSent: {
+            select: {
+              receiver: true,
+            },
+          },
+        },
       });
-      delete user.hash;
       return user;
     } catch (error) {
       throw new NotFoundException({
@@ -88,9 +119,16 @@ export class UserService {
           followedBy: {
             connect: follower,
           },
-          firstName: 'nour',
         },
       });
+      if (user) {
+        await this.prisma.request.deleteMany({
+          where: {
+            senderId: followerId,
+            receiverId: userId,
+          },
+        });
+      }
       return user;
     } catch (error) {
       throw new NotFoundException({
@@ -114,7 +152,31 @@ export class UserService {
           followedBy: {
             disconnect: follower,
           },
-          firstName: 'nour',
+        },
+      });
+      return user;
+    } catch (error) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Could not find user',
+      });
+    }
+  }
+  async unfollow(userId: number, followerId: number) {
+    try {
+      const follower = await this.prisma.user.findUnique({
+        where: {
+          id: followerId,
+        },
+      });
+      const user = await this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          following: {
+            disconnect: follower,
+          },
         },
       });
       return user;
