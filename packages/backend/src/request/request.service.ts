@@ -11,7 +11,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 export class RequestService {
   constructor(private prisma: PrismaService) {}
 
-  async createRequest(senderId, receiverId) {
+  async createRequest(senderId: number, receiverId: number) {
     try {
       const request = await this.prisma.request.create({
         data: {
@@ -31,15 +31,78 @@ export class RequestService {
     }
   }
 
-  async removeRequest(userId, destinationId) {
+  async removeRequest(userId: number, destinationId: number) {
     try {
-      await this.prisma.request.deleteMany({
-        where: {
-          receiverId: destinationId,
-          senderId: userId,
+      if (destinationId) {
+        await this.prisma.request.deleteMany({
+          where: {
+            receiverId: destinationId,
+            senderId: userId,
+          },
+        });
+        return 'request removed';
+      }
+    } catch (error) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Could not find request',
+      });
+    }
+  }
+
+  async declineRequest(userId: number, senderId: number) {
+    try {
+      if (senderId) {
+        await this.prisma.request.deleteMany({
+          where: {
+            receiverId: userId,
+            senderId: senderId,
+          },
+        });
+        return 'request removed';
+      }
+    } catch (error) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Could not find request',
+      });
+    }
+  }
+
+  async getRequests() {
+    try {
+      const requests = await this.prisma.request.findMany({
+        include: {
+          // sender:true
         },
       });
-      return 'request removed';
+      return requests;
+    } catch (error) {}
+  }
+
+  async getRequestById(id: number) {
+    try {
+      // const request = await this.prisma.request.findMany({
+      //   where: {
+      //     id: id,
+      //   },
+      // });
+      // return request;
+    } catch (error) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Could not find request',
+      });
+    }
+  }
+  async deleteRequest(id: number) {
+    try {
+      // const request = await this.prisma.request.delete({
+      //   where: {
+      //     id: id,
+      //   },
+      // });
+      // return request;
     } catch (error) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,

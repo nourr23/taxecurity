@@ -18,6 +18,24 @@ export class RequestController {
   constructor(private requestService: RequestService) {}
 
   @UseGuards(JwtGuard)
+  @Get()
+  getAllRequests() {
+    return this.requestService.getRequests();
+  }
+
+  @UseGuards(JwtGuard)
+  @Get()
+  getRequestById(@Body('id', ParseIntPipe) requestId: number) {
+    return this.requestService.getRequestById(requestId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete('deleteRequest')
+  deleteRequestById(@Body('id', ParseIntPipe) requestId: number) {
+    return this.requestService.deleteRequest(requestId);
+  }
+
+  @UseGuards(JwtGuard)
   @Post()
   createRequest(
     @GetUser('id') senderId: number,
@@ -36,7 +54,13 @@ export class RequestController {
   }
 
   // decline request
-  // get request by id for admin
-  // get requests for admin
+  @UseGuards(JwtGuard)
+  @Delete('declineRequest')
+  declineRequest(
+    @GetUser('id') userId: number,
+    @Body('senderId') senderId: number,
+  ) {
+    return this.requestService.declineRequest(userId, senderId);
+  }
   // delete request by id for admin
 }

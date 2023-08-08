@@ -46,11 +46,12 @@ model Alert {
 }
 
 model Request {
+  id         Int  @id @default(autoincrement())
   senderId   Int
   sender     User @relation("requestSent", fields: [senderId], references: [id])
   receiverId Int
   receiver   User @relation("requestReceived", fields: [receiverId], references: [id])
 
-  @@id([senderId, receiverId])
+  @@unique([senderId, receiverId])
   @@map("Request")
 }
