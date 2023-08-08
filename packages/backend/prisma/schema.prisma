@@ -21,8 +21,13 @@ model User {
   lastName     String
   age          Int?
   city         String?
+  taxi_number  Int?
 
-  alerts Alert[]
+  alerts          Alert[]
+  followedBy      User[]    @relation("UserFollows")
+  following       User[]    @relation("UserFollows")
+  requestSent     Request[] @relation("requestSent")
+  requestReceived Request[] @relation("requestReceived")
 
   @@map("User")
 }
@@ -38,4 +43,15 @@ model Alert {
   user   User @relation(fields: [userId], references: [id])
 
   @@map("Alert")
+}
+
+model Request {
+  id         Int  @id @default(autoincrement())
+  senderId   Int
+  sender     User @relation("requestSent", fields: [senderId], references: [id])
+  receiverId Int
+  receiver   User @relation("requestReceived", fields: [receiverId], references: [id])
+
+  @@unique([senderId, receiverId])
+  @@map("Request")
 }

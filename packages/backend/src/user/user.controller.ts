@@ -6,6 +6,7 @@ import {
   Body,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { GetUser } from 'src/auth/decorator';
@@ -23,16 +24,16 @@ export class UserController {
   }
 
   @UseGuards(JwtGuard)
+  @Get('me')
+  getMe(@GetUser() user: User) {
+    return user;
+  }
+
+  @UseGuards(JwtGuard)
   @Get(':id')
   getUserById(@Param('id') id: string) {
     const userId = parseInt(id);
     return this.userService.getUserById(userId);
-  }
-
-  @UseGuards(JwtGuard)
-  @Get('me')
-  getMe(@GetUser() user: User) {
-    return user;
   }
 
   @UseGuards(JwtGuard)
@@ -45,6 +46,32 @@ export class UserController {
   @Delete(':id')
   removeUser(@Param('id') id: string) {
     const userId = parseInt(id);
-    return this.userService.removeUser(userId);
+    return this.userService.removeUser(userId); // to refactor; only the admin can delete a user
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch('add_follower')
+  addFollower(
+    @GetUser('id') userId: number,
+    @Body('followerId', ParseIntPipe) followerId: number,
+  ) {
+    this.userService.acceptRequest(userId, followerId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch('remove_follower')
+  removeFollower(
+    @GetUser('id') userId: number,
+    @Body('followerId', ParseIntPipe) followerId: number,
+  ) {
+    this.userService.removeFromList(userId, followerId);
+  }
+  @UseGuards(JwtGuard)
+  @Patch('unfollow')
+  unfollow(
+    @GetUser('id') userId: number,
+    @Body('followerId', ParseIntPipe) followerId: number,
+  ) {
+    return this.userService.unfollow(userId, followerId);
   }
 }
