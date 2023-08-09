@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { RequestModule } from './request/request.module';
 import { GroupModule } from './group/group.module';
+import { GroupInvitationModule } from './group-invitation/group-invitation.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { GroupModule } from './group/group.module';
     PrismaModule,
     RequestModule,
     GroupModule,
+    GroupInvitationModule,
   ],
   controllers: [],
   providers: [],
