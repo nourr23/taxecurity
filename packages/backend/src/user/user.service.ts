@@ -7,30 +7,32 @@ import { User } from '@prisma/client';
 export class UserService {
   constructor(private prisma: PrismaService) {}
   async getAllUsers() {
-    const users = await this.prisma.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        phone_number: true,
-        lastName: true,
-        firstName: true,
-        age: true,
-        city: true,
-        followedBy: true,
-        following: true,
-        requestReceived: {
-          select: {
-            sender: true,
+    try {
+      const users = await this.prisma.user.findMany({
+        select: {
+          id: true,
+          email: true,
+          phone_number: true,
+          lastName: true,
+          firstName: true,
+          age: true,
+          city: true,
+          followedBy: true,
+          following: true,
+          requestReceived: {
+            select: {
+              sender: true,
+            },
+          },
+          requestSent: {
+            select: {
+              receiver: true,
+            },
           },
         },
-        requestSent: {
-          select: {
-            receiver: true,
-          },
-        },
-      },
-    });
-    return users;
+      });
+      return users;
+    } catch (error) {}
   }
   async getUserById(id: number) {
     try {

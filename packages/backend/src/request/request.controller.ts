@@ -53,7 +53,6 @@ export class RequestController {
     return this.requestService.removeRequest(userId, destinationId);
   }
 
-  // decline request
   @UseGuards(JwtGuard)
   @Delete('declineRequest')
   declineRequest(
@@ -62,5 +61,4 @@ export class RequestController {
   ) {
     return this.requestService.declineRequest(userId, senderId);
   }
-  // delete request by id for admin
 }

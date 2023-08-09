@@ -28,6 +28,8 @@ model User {
   following       User[]    @relation("UserFollows")
   requestSent     Request[] @relation("requestSent")
   requestReceived Request[] @relation("requestReceived")
+  groups          Group[]   @relation("groups")
+  GroupCreated    Group[]   @relation("groupCreator")
 
   @@map("User")
 }
@@ -54,4 +56,15 @@ model Request {
 
   @@unique([senderId, receiverId])
   @@map("Request")
+}
+
+model Group {
+  id        Int     @id @default(autoincrement())
+  name      String
+  creatorId Int
+  active    Boolean
+  creator   User    @relation("groupCreator", fields: [creatorId], references: [id])
+  users     User[]  @relation("groups")
+
+  @@map("Group")
 }

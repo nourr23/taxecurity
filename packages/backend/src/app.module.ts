@@ -5,6 +5,7 @@ import { AlertModule } from './alert/alert.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { RequestModule } from './request/request.module';
+import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { RequestModule } from './request/request.module';
     AlertModule,
     PrismaModule,
     RequestModule,
+    GroupModule,
   ],
   controllers: [],
   providers: [],
