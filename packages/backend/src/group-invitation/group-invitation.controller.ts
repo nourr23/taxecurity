@@ -29,9 +29,9 @@ export class GroupInvitationController {
   @Get(':id')
   getInvitationById(
     @GetUser('id') userId: number,
-    @Param('id', ParseIntPipe) groupId: number,
+    @Param('id', ParseIntPipe) invitationId: number,
   ) {
-    return this.groupInvitationService.getInvitationById(userId, groupId);
+    return this.groupInvitationService.getInvitationById(userId, invitationId);
   }
 
   @UseGuards(JwtGuard)

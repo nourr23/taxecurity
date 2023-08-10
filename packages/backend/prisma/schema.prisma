@@ -32,6 +32,8 @@ model User {
   GroupCreated            Group[]           @relation("groupCreator")
   GroupInvitationSent     GroupInvitation[] @relation("groupInvitor")
   GroupInvitationRecieved GroupInvitation[] @relation("groupInvited")
+  GroupRequestsSent       GroupRequest[]    @relation("groupRequestSender")
+  GroupRequestsRecieved   GroupRequest[]    @relation("groupRequestReceiver")
 
   @@map("User")
 }
@@ -68,6 +70,7 @@ model Group {
   creator              User              @relation("groupCreator", fields: [creatorId], references: [id])
   users                User[]            @relation("groups")
   GroupInvitationsSent GroupInvitation[]
+  GroupRequest         GroupRequest[]
 
   @@map("Group")
 }
@@ -88,4 +91,22 @@ model GroupInvitation {
 
   @@unique([creatorId, receiverId, groupId])
   @@map("GroupInvitation")
+}
+
+model GroupRequest {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  creatorId Int
+  creator   User @relation("groupRequestSender", fields: [creatorId], references: [id])
+
+  senderId Int
+  sender   User @relation("groupRequestReceiver", fields: [senderId], references: [id])
+
+  Group   Group? @relation(fields: [groupId], references: [id])
+  groupId Int?
+
+  @@unique([creatorId, senderId, groupId])
+  @@map("GroupRequest")
 }

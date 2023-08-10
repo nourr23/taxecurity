@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { RequestModule } from './request/request.module';
 import { GroupModule } from './group/group.module';
 import { GroupInvitationModule } from './group-invitation/group-invitation.module';
+import { GroupRequestModule } from './group-request/group-request.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { GroupInvitationModule } from './group-invitation/group-invitation.modul
     RequestModule,
     GroupModule,
     GroupInvitationModule,
+    GroupRequestModule,
   ],
   controllers: [],
   providers: [],

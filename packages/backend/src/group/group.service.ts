@@ -119,4 +119,6 @@ export class GroupService {
   //get my groups
   //leave group
   //kick from group
+  //accept invitation
+  //accept request
 }
