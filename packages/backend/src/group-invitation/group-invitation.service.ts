@@ -7,10 +7,14 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGroupInvitationDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { GroupService } from 'src/group/group.service';
 
 @Injectable()
 export class GroupInvitationService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private groupService: GroupService,
+  ) {}
 
   async getAllInvitations() {
     try {
@@ -123,6 +127,34 @@ export class GroupInvitationService {
         },
       });
       return 'invitation removed';
+    } catch (error) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Could not find invitation',
+      });
+    }
+  }
+
+  async acceptGroupInvitation(userId: number, inviteId: number) {
+    try {
+      const groupInvitation = await this.prisma.groupInvitation.findUnique({
+        where: {
+          id: inviteId,
+        },
+      });
+      if (groupInvitation) {
+        const creatorId = groupInvitation.creatorId;
+        const groupId = groupInvitation.groupId;
+        await this.prisma.groupInvitation.delete({
+          where: {
+            id: inviteId,
+            receiverId: userId,
+          },
+        });
+        return this.groupService.acceptInvitation(userId, creatorId, groupId);
+      } else {
+        return new ForbiddenException('Cannot find the invitation');
+      }
     } catch (error) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,

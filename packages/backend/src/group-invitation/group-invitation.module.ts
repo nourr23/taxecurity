@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { GroupInvitationService } from './group-invitation.service';
 import { GroupInvitationController } from './group-invitation.controller';
+import { GroupService } from 'src/group/group.service';
 
 @Module({
-  providers: [GroupInvitationService],
+  providers: [GroupInvitationService, GroupService],
   controllers: [GroupInvitationController]
 })
 export class GroupInvitationModule {}

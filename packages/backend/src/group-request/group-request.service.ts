@@ -7,10 +7,14 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { CreateGroupRequestDto } from './dto';
+import { GroupService } from 'src/group/group.service';
 
 @Injectable()
 export class GroupRequestService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private groupService: GroupService,
+  ) {}
 
   async getRequests() {
     try {
@@ -124,6 +128,34 @@ export class GroupRequestService {
         },
       });
       return 'request removed';
+    } catch (error) {
+      throw new NotFoundException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Could not find request',
+      });
+    }
+  }
+
+  async acceptGroupRequest(userId: number, requestId: number) {
+    try {
+      const groupRequest = await this.prisma.groupRequest.findUnique({
+        where: {
+          id: requestId,
+          creatorId: userId,
+        },
+      });
+      if (groupRequest) {
+        const senderId = groupRequest.senderId;
+        const groupId = groupRequest.groupId;
+        await this.prisma.groupRequest.delete({
+          where: {
+            id: requestId,
+          },
+        });
+        return await this.groupService.acceptRequest(userId, senderId, groupId);
+      } else {
+        return new ForbiddenException('Cannot find the request');
+      }
     } catch (error) {
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,

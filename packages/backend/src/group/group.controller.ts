@@ -55,4 +55,20 @@ export class GroupController {
   createGroup(@GetUser('id') userId: number, @Body() dto: CreateGroupDto) {
     return this.groupService.createGroup(dto, userId);
   }
+
+  @UseGuards(JwtGuard)
+  @Post('kick')
+  kickUserFromGroup(
+    @GetUser('id') userId: number,
+    @Body('targetId') targetId: number,
+    @Body('groupId') groupId: number,
+  ) {
+    return this.groupService.kickUserFromGroup(userId, groupId, targetId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('leave')
+  leaveGroup(@GetUser('id') userId: number, @Body('groupId') groupId: number) {
+    return this.groupService.leaveGroup(userId, groupId);
+  }
 }

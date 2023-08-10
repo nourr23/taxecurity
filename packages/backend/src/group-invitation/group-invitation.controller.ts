@@ -60,4 +60,13 @@ export class GroupInvitationController {
   ) {
     return this.groupInvitationService.declineInvitation(userId, invitationId);
   }
+
+  @UseGuards(JwtGuard)
+  @Post('accept')
+  acceptGroupRequest(
+    @GetUser('id') userId: number,
+    @Body('inviteId') inviteId: number,
+  ) {
+    return this.groupInvitationService.acceptGroupInvitation(userId, inviteId);
+  }
 }

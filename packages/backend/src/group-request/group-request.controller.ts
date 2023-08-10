@@ -60,4 +60,13 @@ export class GroupRequestController {
   ) {
     return this.requestService.declineRequest(userId, requestId);
   }
+
+  @UseGuards(JwtGuard)
+  @Post('accept')
+  acceptGroupRequest(
+    @GetUser('id') userId: number,
+    @Body('requestId') requestId: number,
+  ) {
+    return this.requestService.acceptGroupRequest(userId, requestId);
+  }
 }

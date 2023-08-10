@@ -60,6 +60,7 @@ export class UserService {
               receiver: true,
             },
           },
+          groups: true,
         },
       });
       return user;
