@@ -10,8 +10,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { RequestService } from './request.service';
-import { GetUser } from 'src/auth/decorator';
-import { JwtGuard } from 'src/auth/guard';
+import { GetUser } from 'src/store/auth/decorator';
+import { JwtGuard } from 'src/store/auth/guard';
 
 @Controller('request')
 export class RequestController {

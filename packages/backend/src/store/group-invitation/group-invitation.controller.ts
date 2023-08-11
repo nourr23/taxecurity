@@ -10,8 +10,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { GetUser } from 'src/auth/decorator';
-import { JwtGuard } from 'src/auth/guard';
+import { GetUser } from 'src/store/auth/decorator';
+import { JwtGuard } from 'src/store/auth/guard';
 import { CreateGroupInvitationDto } from './dto';
 import { GroupInvitationService } from './group-invitation.service';
 

@@ -7,7 +7,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { CreateGroupRequestDto } from './dto';
-import { GroupService } from 'src/group/group.service';
+import { GroupService } from 'src/store/group/group.service';
 
 @Injectable()
 export class GroupRequestService {
