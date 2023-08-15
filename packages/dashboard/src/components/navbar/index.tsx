@@ -4,7 +4,7 @@ const Navbar = () => {
   const location = useLocation();
   return (
     <div className="h-[100vh] w-[240px] flex flex-col border-r-2">
-      <div className="w-full h-[90px] border-b-2 flex items-center justify-center text-xl font-bold">
+      <div className="w-full h-[80px] border-b-2 flex items-center justify-center text-xl font-bold">
         Dashboard
       </div>
       <div className="pt-7">
