@@ -1,4 +1,3 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/navbar";
 const RoutesLayout = () => {
@@ -6,7 +5,9 @@ const RoutesLayout = () => {
     <div>
       <div className="flex">
         <Navbar />
-        <Outlet />
+        <div className="p-10">
+          <Outlet />
+        </div>
       </div>
     </div>
   );
