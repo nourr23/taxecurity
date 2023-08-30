@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -36,6 +33,7 @@ model User {
   GroupRequestsRecieved   GroupRequest[]    @relation("groupRequestReceiver")
 
   @@map("User")
+
 }
 
 model Alert {
@@ -44,19 +42,18 @@ model Alert {
   updatedAt DateTime @updatedAt
   status    String
   type      String?
-
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
 
   @@map("Alert")
 }
 
 model Request {
-  id         Int  @id @default(autoincrement())
   senderId   Int
-  sender     User @relation("requestSent", fields: [senderId], references: [id])
   receiverId Int
+  id         Int  @id @default(autoincrement())
   receiver   User @relation("requestReceived", fields: [receiverId], references: [id])
+  sender     User @relation("requestSent", fields: [senderId], references: [id])
 
   @@unique([senderId, receiverId])
   @@map("Request")
@@ -68,26 +65,23 @@ model Group {
   creatorId            Int
   active               Boolean
   creator              User              @relation("groupCreator", fields: [creatorId], references: [id])
-  users                User[]            @relation("groups")
   GroupInvitationsSent GroupInvitation[]
   GroupRequest         GroupRequest[]
+  users                User[]            @relation("groups")
 
   @@map("Group")
 }
 
 model GroupInvitation {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  creatorId Int
-  creator   User @relation("groupInvitor", fields: [creatorId], references: [id])
-
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  creatorId  Int
   receiverId Int
-  receiver   User @relation("groupInvited", fields: [receiverId], references: [id])
-
-  groupId Int
-  group   Group @relation(fields: [groupId], references: [id])
+  groupId    Int
+  creator    User     @relation("groupInvitor", fields: [creatorId], references: [id])
+  group      Group    @relation(fields: [groupId], references: [id])
+  receiver   User     @relation("groupInvited", fields: [receiverId], references: [id])
 
   @@unique([creatorId, receiverId, groupId])
   @@map("GroupInvitation")
@@ -97,16 +91,26 @@ model GroupRequest {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   creatorId Int
-  creator   User @relation("groupRequestSender", fields: [creatorId], references: [id])
-
-  senderId Int
-  sender   User @relation("groupRequestReceiver", fields: [senderId], references: [id])
-
-  Group   Group? @relation(fields: [groupId], references: [id])
-  groupId Int?
+  senderId  Int
+  groupId   Int?
+  creator   User     @relation("groupRequestSender", fields: [creatorId], references: [id])
+  Group     Group?   @relation(fields: [groupId], references: [id])
+  sender    User     @relation("groupRequestReceiver", fields: [senderId], references: [id])
 
   @@unique([creatorId, senderId, groupId])
   @@map("GroupRequest")
+}
+
+model Admin {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  phone_number String   @unique
+  email        String?  @unique
+  hash         String   @unique
+  firstName    String
+  lastName     String
+
+  @@map("Admin")
 }
