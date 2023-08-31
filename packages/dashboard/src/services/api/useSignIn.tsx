@@ -6,8 +6,9 @@ export function useSignIn() {
     (data: any) => client.post("/auth/signin", data, { timeout: 5000 }),
     {
       onError: (error: any) => {
-        console.log({ error });
+        // console.log(error.response);
       },
+      onSuccess(data) {},
     }
   );
 }

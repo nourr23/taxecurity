@@ -45,11 +45,12 @@ export class AuthService {
       },
     });
     if (!admin) {
-      throw new ForbiddenException('Credentials incorrect');
+      return new ForbiddenException('Credentials incorrect');
     }
     const pwMatches = await argon.verify(admin.hash, dto.password);
     if (!pwMatches) {
-      throw new ForbiddenException('Credentials incorrect');
+      // throw new ForbiddenException('Credentials incorrect');
+      return new ForbiddenException('Credentials incorrect');
     }
     return this.signToken(admin.id, admin.email);
     // } catch (error) {
