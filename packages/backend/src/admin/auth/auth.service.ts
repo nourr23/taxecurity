@@ -38,7 +38,7 @@ export class AuthService {
   }
 
   async signIn(dto: signInAdminDto) {
-    // try {
+    try {
     const admin = await this.prisma.admin.findUnique({
       where: {
         email: dto.email,
@@ -52,9 +52,9 @@ export class AuthService {
       throw new ForbiddenException('Credentials incorrect');
     }
     return this.signToken(admin.id, admin.email);
-    // } catch (error) {
-
-    // }
+    } catch (error) {
+      throw new ForbiddenException('Credentials incorrect');
+    }
   }
 
   async signToken(
