@@ -7,7 +7,7 @@ import { FormInput } from "../../components/form-input";
 
 const LoginPage = () => {
   const [showError, setShowError] = React.useState(false);
-  const { mutateAsync, isLoading } = useSignIn();
+  const { mutateAsync, isLoading, isError, error } = useSignIn();
   const { values, touched, errors, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues: {
@@ -23,16 +23,17 @@ const LoginPage = () => {
   const login = async (data: any) => {
     await mutateAsync(data, {
       onSuccess: (response) => {
-        console.log(response);
-        if (response.data.status === 403) {
-          setShowError(true);
-        } else {
-          setShowError(false);
-        }
+        console.log({ response });
+        setShowError(false);
       },
-      onError: (error) => setShowError(true),
-    });
+      onError: (error) => {
+        setShowError(true);
+        console.log("from login", error);
+      },
+    }).catch((error) => console.log());
   };
+
+  if (isError) return <span> {error.message} </span>;
 
   return (
     <div className="flex w-full h-[100vh] items-center justify-center">
