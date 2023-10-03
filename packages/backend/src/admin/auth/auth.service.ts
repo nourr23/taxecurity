@@ -39,19 +39,19 @@ export class AuthService {
 
   async signIn(dto: signInAdminDto) {
     try {
-    const admin = await this.prisma.admin.findUnique({
-      where: {
-        email: dto.email,
-      },
-    });
-    if (!admin) {
-      throw new ForbiddenException('Credentials incorrect');
-    }
-    const pwMatches = await argon.verify(admin.hash, dto.password);
-    if (!pwMatches) {
-      throw new ForbiddenException('Credentials incorrect');
-    }
-    return this.signToken(admin.id, admin.email);
+      const admin = await this.prisma.admin.findUnique({
+        where: {
+          email: dto.email,
+        },
+      });
+      if (!admin) {
+        throw new ForbiddenException('Credentials incorrect');
+      }
+      const pwMatches = await argon.verify(admin.hash, dto.password);
+      if (!pwMatches) {
+        throw new ForbiddenException('Credentials incorrect');
+      }
+      return this.signToken(admin.id, admin.email);
     } catch (error) {
       throw new ForbiddenException('Credentials incorrect');
     }
