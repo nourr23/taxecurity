@@ -5,7 +5,9 @@ const RoutesLayout = () => {
   return (
     <div>
       <div className="flex">
-        <div className="hidden md:block"><Navbar /></div>
+        <div className="hidden md:block">
+          <Navbar />
+        </div>
         <div className="flex-1">
           <Header />
           <div className="p-10">
