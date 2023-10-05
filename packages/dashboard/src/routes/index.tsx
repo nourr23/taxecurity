@@ -1,5 +1,5 @@
 import React from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 import HomePage from "../pages/home";
 import LoginPage from "../pages/login";
 import UsersPage from "../pages/users";
@@ -8,22 +8,36 @@ import GroupsPage from "../pages/groups";
 import GroupRequestsPage from "../pages/group-requests";
 import GroupInvitesPage from "../pages/group-invites";
 import RoutesLayout from "./Routes";
+import { RouterProvider } from "react-router-dom";
+import APIProvider from "../services/global/APIProvider";
+import { useAuth } from "../core/auth";
 
-export const router = createBrowserRouter([
-  {
-    path: "/dashboard",
-    element: <RoutesLayout />,
-    children: [
-      { path: "/dashboard/", element: <HomePage /> },
-      { path: "/dashboard/users", element: <UsersPage /> },
-      { path: "/dashboard/requests", element: <UserRequestsPage /> },
-      { path: "/dashboard/groups", element: <GroupsPage /> },
-      { path: "/dashboard/group-requests", element: <GroupRequestsPage /> },
-      { path: "/dashboard/group-invites", element: <GroupInvitesPage /> },
-    ],
-  },
-  {
-    path: "/",
-    element: <LoginPage />,
-  },
-]);
+const Router = () => {
+  const {status} = useAuth()
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: status === 'signIn' ?<RoutesLayout /> : <Navigate to={'/login'} />,
+      children: [
+        { path: "/", element: <HomePage /> },
+        { path: "/users", element: <UsersPage /> },
+        { path: "/requests", element: <UserRequestsPage /> },
+        { path: "/groups", element: <GroupsPage /> },
+        { path: "/group-requests", element: <GroupRequestsPage /> },
+        { path: "/group-invites", element: <GroupInvitesPage /> },
+      ],
+    },
+    {
+      path: "/login",
+      element: status !== 'signIn' ? <LoginPage /> : <Navigate to={'/'} />,
+    },
+  ]);
+
+  return (
+    <APIProvider>
+      <RouterProvider router={router} />
+    </APIProvider>
+  );
+};
+
+export default Router;
