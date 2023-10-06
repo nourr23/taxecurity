@@ -7657,6 +7657,11 @@ react-is@^18.0.0:
   resolved "https://registry.npmjs.org/react-is/-/react-is-18.2.0.tgz"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
+react-query-kit@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-query-kit/-/react-query-kit-2.0.3.tgz#f8e81b03d5df1ca4af56d74ae43e3f4391d7a7fa"
+  integrity sha512-XEuTbKDZzXfxMUbVcq/c+FKVczVY1AdURSzIy55NbdQE3/QVXEipcwnwOa6hxyH/ehX2gHTnS346EMzr9uOq5Q==
+
 react-query@^3.39.3:
   version "3.39.3"
   resolved "https://registry.npmjs.org/react-query/-/react-query-3.39.3.tgz"

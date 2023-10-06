@@ -24,9 +24,8 @@ const LoginPage = () => {
 
   const login = async (data: any) => {
     await mutateAsync(data, {
-      onSuccess: (response) => {
-        console.log({ response });
-        signIn(response.data.access_token)
+      onSuccess: (response)  => {
+        
         setShowError(false);
       },
       onError: (error) => {
