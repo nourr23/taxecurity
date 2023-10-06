@@ -12,67 +12,65 @@ const Navbar = () => {
           <ul>
             <li
               className={`h-[40px] flex ${
-                location.pathname === "/dashboard"
-                  ? "text-blue-500"
-                  : "text-gray-500"
+                location.pathname === "" ? "text-blue-500" : "text-gray-500"
               }  items-center font-bold pl-8 hover:bg-gray-100`}
             >
-              <Link className="w-full " to={"/dashboard"}>
+              <Link className="w-full " to={""}>
                 Home
               </Link>
             </li>
             <li
               className={`h-[40px] ${
-                location.pathname === "/dashboard/users"
+                location.pathname === "/users"
                   ? "text-blue-500"
                   : "text-gray-500"
               }  flex items-center font-bold pl-8 hover:bg-gray-100`}
             >
-              <Link className="w-full" to={"/dashboard/users"}>
+              <Link className="w-full" to={"/users"}>
                 Users
               </Link>
             </li>
             <li
               className={`h-[40px] ${
-                location.pathname === "/dashboard/requests"
+                location.pathname === "/requests"
                   ? "text-blue-500"
                   : "text-gray-500"
               }   flex items-center font-bold pl-8 hover:bg-gray-100`}
             >
-              <Link className="w-full" to={"/dashboard/requests"}>
+              <Link className="w-full" to={"/requests"}>
                 User requests
               </Link>
             </li>
             <li
               className={`h-[40px] ${
-                location.pathname === "/dashboard/groups"
+                location.pathname === "/groups"
                   ? "text-blue-500"
                   : "text-gray-500"
               }  flex items-center font-bold pl-8 hover:bg-gray-100`}
             >
-              <Link className="w-full" to={"/dashboard/groups"}>
+              <Link className="w-full" to={"/groups"}>
                 Groups
               </Link>
             </li>
             <li
               className={`h-[40px] ${
-                location.pathname === "/dashboard/group-requests"
+                location.pathname === "/group-requests"
                   ? "text-blue-500"
                   : "text-gray-500"
               }   flex items-center font-bold pl-8 hover:bg-gray-100`}
             >
-              <Link className="w-full" to={"/dashboard/group-requests"}>
+              <Link className="w-full" to={"/group-requests"}>
                 Group requests
               </Link>
             </li>
             <li
               className={`h-[40px] ${
-                location.pathname === "/dashboard/group-invites"
+                location.pathname === "/group-invites"
                   ? "text-blue-500"
                   : "text-gray-500"
               }   flex items-center font-bold pl-8 hover:bg-gray-100`}
             >
-              <Link className="w-full" to={"/dashboard/group-invites"}>
+              <Link className="w-full" to={"/group-invites"}>
                 Group invites
               </Link>
             </li>

@@ -1,11 +1,11 @@
 import axios from "axios";
-
+import { getItem } from "../../core/storage";
+console.log("from api client", getItem("auth"));
 export const client = axios.create({
-  baseURL: "http://localhost:3333/admin",
+  baseURL: "http://localhost:3333",
   timeout: 1000,
-  headers: {
-    // Authorization: `Bearer ${getAuthToken()}`,
-    "Access-Control-Allow-Origin": "*",
-    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInBob25lX251bWJlciI6Ijk5ODg3NzQ0IiwiaWF0IjoxNjkyMTgyMDQ3LCJleHAiOjE2OTIyMDIxNDd9.cdTarN0IAMFt-eVAcltHbNXC6U23eFjNf8fbi8w4bOg`,
-  },
+  // headers: {
+  //   Authorization: `Bearer ${getItem("auth")}`,
+  //   "Access-Control-Allow-Origin": "*",
+  // },
 });

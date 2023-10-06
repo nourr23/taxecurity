@@ -4,8 +4,10 @@ import { loginSchema } from "../../Validations";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { FormInput } from "../../components/form-input";
+import { useAuth } from '../../core/auth';
 
 const LoginPage = () => {
+  const { signIn } = useAuth();
   const [showError, setShowError] = React.useState(false);
   const { mutateAsync, isLoading, isError, error } = useSignIn();
   const { values, touched, errors, handleBlur, handleChange, handleSubmit } =
@@ -22,8 +24,8 @@ const LoginPage = () => {
 
   const login = async (data: any) => {
     await mutateAsync(data, {
-      onSuccess: (response) => {
-        console.log({ response });
+      onSuccess: (response)  => {
+        
         setShowError(false);
       },
       onError: (error) => {
