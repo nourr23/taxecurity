@@ -14,7 +14,7 @@ export const getMe = async () => {
 };
 
 export function useAccount() {
-  return useQuery<any>(["account"], () => getMe(), {
+  return useQuery<any>(["me"], () => getMe(), {
     // retry: true,
     keepPreviousData: true,
   });

@@ -4,13 +4,13 @@ import { client } from "../global/apiClient";
 import { getItem } from "../../core/storage";
 
 type Response = [];
-type Variables = void; // as react-query-kit is strongly typed, we need to specify the type of the variables as void in case we don't need them
+type Variables = { id: string }; // as react-query-kit is strongly typed, we need to specify the type of the variables as void in case we don't need them
 
-export const useUsers = createQuery<Response, Variables, AxiosError>({
-  primaryKey: "users", // we recommend using  endpoint base url as primaryKey
-  queryFn: () => {
+export const useUserDetails = createQuery<Response, Variables, AxiosError>({
+  primaryKey: "userDetails", // we recommend using  endpoint base url as primaryKey
+  queryFn: ({ queryKey: [primaryKey, variables] }) => {
     return client
-      .get(`users`, {
+      .get(`users/${variables.id}`, {
         headers: {
           Authorization: `Bearer ${getItem("auth")}`,
           "Access-Control-Allow-Origin": "*",

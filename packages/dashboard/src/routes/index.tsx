@@ -11,6 +11,7 @@ import RoutesLayout from "./Routes";
 import { RouterProvider } from "react-router-dom";
 import APIProvider from "../services/global/APIProvider";
 import { useAuth } from "../core/auth";
+import UserDetails from "../pages/users/user-details";
 
 const Router = () => {
   const {status} = useAuth()
@@ -25,6 +26,7 @@ const Router = () => {
         { path: "/groups", element: <GroupsPage /> },
         { path: "/group-requests", element: <GroupRequestsPage /> },
         { path: "/group-invites", element: <GroupInvitesPage /> },
+        { path: "/users/:id", element: <UserDetails /> },
       ],
     },
     {
