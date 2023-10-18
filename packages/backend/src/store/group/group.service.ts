@@ -13,7 +13,11 @@ export class GroupService {
   // admin
   async getGroups() {
     try {
-      const groups = await this.prisma.group.findMany({});
+      const groups = await this.prisma.group.findMany({
+        include: {
+          creator: true,
+        },
+      });
       return groups;
     } catch (error) {
       console.log(error);

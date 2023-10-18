@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useUserRequests } from "../../services/api";
 import { Link } from "react-router-dom";
 import { Table } from "@medusajs/ui";
