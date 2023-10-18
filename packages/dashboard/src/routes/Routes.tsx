@@ -19,7 +19,7 @@ const RoutesLayout = () => {
               </div>
               <div className="flex-1">
                 <Header data={data} />
-                <div className="p-10">
+                <div className="md:p-10 p-4">
                   <Outlet />
                 </div>
               </div>

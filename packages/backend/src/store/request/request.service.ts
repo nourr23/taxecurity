@@ -72,8 +72,10 @@ export class RequestService {
   async getRequests() {
     try {
       const requests = await this.prisma.request.findMany({
-        include: {
-          // sender:true
+        select: {
+          sender: true,
+          receiver: true,
+          id: true,
         },
       });
       return requests;
