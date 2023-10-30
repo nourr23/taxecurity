@@ -1,9 +1,17 @@
 import { useParams } from "react-router";
-import { useUserDetails } from "../../services/api/useUserDetails";
 import { useEffect, useState } from "react";
 import ModalComponent from "../../components/modal/index.tsx";
+import { useDeleteUser, useUserDetails } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 const UserDetails = () => {
+  const navigate = useNavigate();
+  const {
+    mutateAsync: deleteAsync,
+    isLoading: isLoadingDelete,
+    isError: isLoadingError,
+    error: errorDelete,
+  } = useDeleteUser();
   const { id } = useParams();
   const [open, setOpen] = useState(false);
   const [modalData, setModalData] = useState({});
@@ -25,6 +33,12 @@ const UserDetails = () => {
     setModalData(user.following);
     setModalTitle("Following");
     setOpen(true);
+  };
+
+  const deleteUser = (id: number) => {
+    deleteAsync(id).then((res) => {
+      navigate("/users");
+    });
   };
   if (isLoading || isFetching) {
     return <span>loading</span>;
@@ -64,7 +78,17 @@ const UserDetails = () => {
                   {user.firstName} {user.lastName}{" "}
                 </div>
                 <div className="">{user.phone_number}</div>
-                <div className="">{user.email}</div>
+                <div className="flex mt-3">
+                  <button
+                    onClick={() => deleteUser(user.id)}
+                    className="rounded bg-red-500 px-6 py-1 text-white"
+                  >
+                    Delete
+                  </button>
+                  <button className="rounded border-2 border-red-500 px-6 py-1 text-red-500 ml-3">
+                    Block
+                  </button>
+                </div>
               </div>
             </div>
           </div>

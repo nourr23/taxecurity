@@ -3,3 +3,7 @@ export * from "./useSignIn";
 export * from "./useAccount";
 export * from "./useUserRequests";
 export * from "./useGroups";
+export * from "./useDeleteUser";
+export * from "./useUserDetails";
+export * from "./useDeleteGroup";
+export * from "./useSetGroup";

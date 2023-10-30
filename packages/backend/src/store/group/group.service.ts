@@ -16,6 +16,7 @@ export class GroupService {
       const groups = await this.prisma.group.findMany({
         include: {
           creator: true,
+          users: true,
         },
       });
       return groups;
@@ -67,16 +68,17 @@ export class GroupService {
       await this.prisma.group.delete({
         where: {
           id: groupId,
-          OR: [
-            {
-              creatorId: userId,
-            },
-            // or admin
-          ],
+          // OR: [
+          //   {
+          //     creatorId: userId,
+          //   },
+          //   // or admin
+          // ],
         },
       });
       return 'group deleted successfully';
     } catch (error) {
+      console.log(error);
       throw new NotFoundException({
         status: HttpStatus.NOT_FOUND,
         error: 'Could not find group',
@@ -89,7 +91,7 @@ export class GroupService {
       const group = await this.prisma.group.update({
         where: {
           id: groupId,
-          creatorId: userId,
+          // creatorId: userId, creator or admin
         },
         data: {
           ...dto,
@@ -165,7 +167,7 @@ export class GroupService {
           id: targetId,
         },
       });
-      console.log({ targetId }, target);
+      // console.log({ targetId }, target);
       if (target) {
         const group = await this.prisma.group.update({
           where: {
