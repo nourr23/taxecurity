@@ -33,7 +33,6 @@ model User {
   GroupRequestsRecieved   GroupRequest[]    @relation("groupRequestReceiver")
 
   @@map("User")
-
 }
 
 model Alert {
@@ -43,7 +42,7 @@ model Alert {
   status    String
   type      String?
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("Alert")
 }
@@ -52,8 +51,8 @@ model Request {
   senderId   Int
   receiverId Int
   id         Int  @id @default(autoincrement())
-  receiver   User @relation("requestReceived", fields: [receiverId], references: [id])
-  sender     User @relation("requestSent", fields: [senderId], references: [id])
+  receiver   User @relation("requestReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+  sender     User @relation("requestSent", fields: [senderId], references: [id], onDelete: Cascade)
 
   @@unique([senderId, receiverId])
   @@map("Request")
@@ -64,7 +63,7 @@ model Group {
   name                 String
   creatorId            Int
   active               Boolean
-  creator              User              @relation("groupCreator", fields: [creatorId], references: [id])
+  creator              User              @relation("groupCreator", fields: [creatorId], references: [id], onDelete: Cascade)
   GroupInvitationsSent GroupInvitation[]
   GroupRequest         GroupRequest[]
   users                User[]            @relation("groups")
@@ -79,9 +78,9 @@ model GroupInvitation {
   creatorId  Int
   receiverId Int
   groupId    Int
-  creator    User     @relation("groupInvitor", fields: [creatorId], references: [id])
-  group      Group    @relation(fields: [groupId], references: [id])
-  receiver   User     @relation("groupInvited", fields: [receiverId], references: [id])
+  creator    User     @relation("groupInvitor", fields: [creatorId], references: [id], onDelete: Cascade)
+  group      Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  receiver   User     @relation("groupInvited", fields: [receiverId], references: [id], onDelete: Cascade)
 
   @@unique([creatorId, receiverId, groupId])
   @@map("GroupInvitation")
@@ -94,9 +93,9 @@ model GroupRequest {
   creatorId Int
   senderId  Int
   groupId   Int?
-  creator   User     @relation("groupRequestSender", fields: [creatorId], references: [id])
-  Group     Group?   @relation(fields: [groupId], references: [id])
-  sender    User     @relation("groupRequestReceiver", fields: [senderId], references: [id])
+  creator   User     @relation("groupRequestSender", fields: [creatorId], references: [id], onDelete: Cascade)
+  Group     Group?   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  sender    User     @relation("groupRequestReceiver", fields: [senderId], references: [id], onDelete: Cascade)
 
   @@unique([creatorId, senderId, groupId])
   @@map("GroupRequest")
