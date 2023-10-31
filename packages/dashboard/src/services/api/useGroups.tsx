@@ -8,7 +8,7 @@ type Variables = void; // as react-query-kit is strongly typed, we need to speci
 
 export const useGroups = createQuery<Response, Variables, AxiosError>({
   primaryKey: "groups", // we recommend using  endpoint base url as primaryKey
-  queryFn: () => {
+  queryFn: async() => {
     return client
       .get(`groups`, {
         headers: {

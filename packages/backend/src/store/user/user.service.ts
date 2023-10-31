@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { EditUserDto } from './dto';
+import { EditUserDto, FilteredUserDto } from './dto';
 import { User } from '@prisma/client';
 
 @Injectable()
@@ -9,6 +9,8 @@ export class UserService {
   async getAllUsers() {
     try {
       const users = await this.prisma.user.findMany({
+        // take: 2,
+        // skip: 1,
         select: {
           id: true,
           email: true,
@@ -34,6 +36,64 @@ export class UserService {
       return users;
     } catch (error) {}
   }
+
+  async getFilteredUsers(filterUserDto: FilteredUserDto) {
+    try {
+      const users = await this.prisma.user.findMany({
+        take: 10,
+        skip: 0,
+        where: {
+          OR: [
+            {
+              email: {
+                contains: filterUserDto.email,
+                mode: 'insensitive',
+              },
+            },
+            {
+              firstName: {
+                contains: filterUserDto.firstName,
+                mode: 'insensitive',
+              },
+            },
+            {
+              lastName: {
+                contains: filterUserDto.lastName,
+                mode: 'insensitive',
+              },
+            },
+            { phone_number: { contains: filterUserDto.phone_number } },
+          ],
+        },
+        select: {
+          id: true,
+          email: true,
+          phone_number: true,
+          lastName: true,
+          firstName: true,
+          age: true,
+          city: true,
+          followedBy: true,
+          following: true,
+          requestReceived: {
+            select: {
+              sender: true,
+            },
+          },
+          requestSent: {
+            select: {
+              receiver: true,
+            },
+          },
+        },
+        orderBy: {
+          firstName: 'asc',
+        },
+      });
+      return users;
+    } catch (error) {}
+  }
+
   async getUserById(id: number) {
     try {
       const user = await this.prisma.user.findUnique({
