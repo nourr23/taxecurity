@@ -1,16 +1,20 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { EditUserDto, FilteredUserDto } from './dto';
+import { EditUserDto, FilteredUserDto, PaginationUserDto } from './dto';
 import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
-  async getAllUsers() {
+  async getAllUsers(paginationUserDto: PaginationUserDto) {
     try {
       const users = await this.prisma.user.findMany({
-        // take: 2,
-        // skip: 1,
+        take: Number(paginationUserDto.top)
+          ? Number(paginationUserDto.top)
+          : 10,
+        skip: Number(paginationUserDto.skip)
+          ? Number(paginationUserDto.skip)
+          : 0,
         select: {
           id: true,
           email: true,
@@ -37,11 +41,18 @@ export class UserService {
     } catch (error) {}
   }
 
-  async getFilteredUsers(filterUserDto: FilteredUserDto) {
+  async getFilteredUsers(
+    filterUserDto: FilteredUserDto,
+    paginationUserDto: PaginationUserDto,
+  ) {
     try {
       const users = await this.prisma.user.findMany({
-        take: 10,
-        skip: 0,
+        take: Number(paginationUserDto.top)
+          ? Number(paginationUserDto.top)
+          : 10,
+        skip: Number(paginationUserDto.skip)
+          ? Number(paginationUserDto.skip)
+          : 0,
         where: {
           OR: [
             {

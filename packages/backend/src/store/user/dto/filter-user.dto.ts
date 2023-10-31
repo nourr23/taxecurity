@@ -16,3 +16,13 @@ export class FilteredUserDto {
   @IsOptional()
   lastName?: string;
 }
+
+export class PaginationUserDto {
+  @IsString()
+  @IsOptional()
+  top?: string;
+
+  @IsString()
+  @IsOptional()
+  skip?: string;
+}
