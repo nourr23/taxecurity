@@ -6,10 +6,10 @@ import SearchInput from "../../components/search-input";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 
 const UsersPage = () => {
-  const [skip, setSkip] = useState(0);
+  const [pageNumber, setPageNumber] = useState(0);
   const [search, setSearch] = useState("");
   const { data, isLoading, isFetching, isFetched, isSuccess, isError } =
-    useUsers(search);
+    useUsers(search, { limitPerPage: 10, pageNumber });
   const UserCard = ({ user }: any) => {
     return (
       <Link
@@ -26,6 +26,7 @@ const UsersPage = () => {
 
   const onSearch = (e: any) => {
     e.preventDefault();
+    setPageNumber(0);
     setSearch(e.target.value);
   };
 
@@ -78,11 +79,19 @@ const UsersPage = () => {
                   </Table.Body>
                 </Table>
                 <div className="flex mt-4 items-center font-bold text-blue-500">
-                  <button>
+                  <button
+                    disabled={pageNumber === 0}
+                    onClick={() => {
+                      pageNumber > 0 && setPageNumber((prev) => prev - 10);
+                    }}
+                  >
                     <MdKeyboardArrowLeft size={32} color={"#3b82f6"} />
                   </button>
-                  <div className="mx-2">page  {skip / 10 + 1} </div>
-                  <button>
+                  <div className="mx-2">page {pageNumber / 10 + 1} </div>
+                  <button
+                    disabled={data.length < 10}
+                    onClick={() => setPageNumber((prev) => prev + 10)}
+                  >
                     <MdKeyboardArrowRight size={32} color={"#3b82f6"} />
                   </button>
                 </div>

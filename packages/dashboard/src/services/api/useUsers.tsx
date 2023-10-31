@@ -38,9 +38,13 @@ type Variables = {
   phone_number: string;
 };
 
-const getFilteredUser = async (variables: string) => {
+type Pagination = {
+  pageNumber?: number;
+  limitPerPage?: number;
+};
+const getFilteredUser = async (variables: string, pagination: Pagination) => {
   const { data } = await client.get(
-    `users/filtered?lastName=${variables}&firstName=${variables}&email=${variables}&phone_number=${variables}`,
+    `users/filtered?lastName=${variables}&firstName=${variables}&email=${variables}&phone_number=${variables}&skip=${pagination.pageNumber}`,
     {
       timeout: 2000, // since it can be heavy too
       headers: {
@@ -52,17 +56,21 @@ const getFilteredUser = async (variables: string) => {
   return data;
 };
 
-export function useUsers(variables: string) {
-  return useQuery<any>(["users", variables], () => getFilteredUser(variables), {
-    retry: true,
-    keepPreviousData: true,
-    refetchOnReconnect: true,
-    refetchOnWindowFocus: true,
-    cacheTime: 1000 * 60 * 60,
-    // enabled: variables.length > 2 || variables.length === 0,
-    onError: (error: any) => {
-      // showError(error);
-    },
-    onSuccess(data) {},
-  });
+export function useUsers(variables: string, pagination: Pagination) {
+  return useQuery<any>(
+    ["users", variables, pagination],
+    () => getFilteredUser(variables, pagination),
+    {
+      retry: true,
+      keepPreviousData: true,
+      refetchOnReconnect: true,
+      refetchOnWindowFocus: true,
+      cacheTime: 1000 * 60 * 60,
+      // enabled: variables.length > 2 || variables.length === 0,
+      onError: (error: any) => {
+        // showError(error);
+      },
+      onSuccess(data) {},
+    }
+  );
 }
