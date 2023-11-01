@@ -8,10 +8,12 @@ import {
   Delete,
   ParseIntPipe,
   Post,
+  Query,
 } from '@nestjs/common';
 import { RequestService } from './request.service';
 import { GetUser } from 'src/store/auth/decorator';
 import { JwtGuard } from 'src/store/auth/guard';
+import { FilteredRequestsDto, PaginationRequestsDto } from './dto';
 
 @Controller('request')
 export class RequestController {
@@ -19,8 +21,22 @@ export class RequestController {
 
   @UseGuards(JwtGuard)
   @Get()
-  getAllRequests() {
-    return this.requestService.getRequests();
+  getAllRequests(@Query() paginationRequestDto: PaginationRequestsDto) {
+    return this.requestService.getRequests(paginationRequestDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('filtered')
+  getFilteredUsers(
+    @Query() filterRequestDto: FilteredRequestsDto,
+    @Query() paginationRequestDto: PaginationRequestsDto,
+  ) {
+    if (Object.keys(filterRequestDto).length) {
+      return this.requestService.getFilteredRequests(
+        filterRequestDto,
+        paginationRequestDto,
+      );
+    } else return this.requestService.getRequests(paginationRequestDto);
   }
 
   @UseGuards(JwtGuard)
