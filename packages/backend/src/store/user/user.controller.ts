@@ -7,11 +7,12 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { GetUser } from 'src/store/auth/decorator';
 import { JwtGuard } from 'src/store/auth/guard';
-import { EditUserDto } from './dto';
+import { EditUserDto, FilteredUserDto, PaginationUserDto } from './dto';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -19,8 +20,24 @@ export class UserController {
   constructor(private userService: UserService) {}
   @UseGuards(JwtGuard)
   @Get()
-  getAllUsers() {
-    return this.userService.getAllUsers();
+  getAllUsers(
+    @Query('skip', ParseIntPipe) paginationUserDto: PaginationUserDto,
+  ) {
+    return this.userService.getAllUsers(paginationUserDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('filtered')
+  getFilteredUsers(
+    @Query() filterUserDto: FilteredUserDto,
+    @Query() paginationUserDto: PaginationUserDto,
+  ) {
+    if (Object.keys(filterUserDto).length) {
+      return this.userService.getFilteredUsers(
+        filterUserDto,
+        paginationUserDto,
+      );
+    } else return this.userService.getAllUsers(paginationUserDto);
   }
 
   @UseGuards(JwtGuard)

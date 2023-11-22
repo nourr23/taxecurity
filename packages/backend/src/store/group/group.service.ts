@@ -5,15 +5,75 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateGroupDto, UpdateGroupDto } from './dto';
+import {
+  CreateGroupDto,
+  FilteredGroupDto,
+  PaginationGroupDto,
+  UpdateGroupDto,
+} from './dto';
 
 @Injectable()
 export class GroupService {
   constructor(private prisma: PrismaService) {}
   // admin
-  async getGroups() {
+  async getGroups(paginationGroupDto: PaginationGroupDto) {
     try {
       const groups = await this.prisma.group.findMany({
+        take: Number(paginationGroupDto.top)
+          ? Number(paginationGroupDto.top)
+          : 10,
+        skip: Number(paginationGroupDto.skip)
+          ? Number(paginationGroupDto.skip)
+          : 0,
+        include: {
+          creator: true,
+          users: true,
+        },
+      });
+      return groups;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getFilteredGroups(
+    filterGroupDto: FilteredGroupDto,
+    paginationGroupDto: PaginationGroupDto,
+  ) {
+    try {
+      const groups = await this.prisma.group.findMany({
+        take: Number(paginationGroupDto.top)
+          ? Number(paginationGroupDto.top)
+          : 10,
+        skip: Number(paginationGroupDto.skip)
+          ? Number(paginationGroupDto.skip)
+          : 0,
+        where: {
+          OR: [
+            {
+              name: {
+                contains: filterGroupDto.name,
+                mode: 'insensitive',
+              },
+            },
+            {
+              creator: {
+                lastName: {
+                  contains: filterGroupDto.group_admin,
+                  mode: 'insensitive',
+                },
+              },
+            },
+            {
+              creator: {
+                firstName: {
+                  contains: filterGroupDto.group_admin,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          ],
+        },
         include: {
           creator: true,
           users: true,

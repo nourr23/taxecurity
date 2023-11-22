@@ -8,10 +8,16 @@ import {
   Delete,
   ParseIntPipe,
   Post,
+  Query,
 } from '@nestjs/common';
 import { GetUser } from 'src/store/auth/decorator';
 import { JwtGuard } from 'src/store/auth/guard';
-import { CreateGroupDto, UpdateGroupDto } from './dto';
+import {
+  CreateGroupDto,
+  FilteredGroupDto,
+  PaginationGroupDto,
+  UpdateGroupDto,
+} from './dto';
 import { GroupService } from './group.service';
 
 @Controller('groups')
@@ -21,9 +27,24 @@ export class GroupController {
   //admin
   @UseGuards(JwtGuard)
   @Get()
-  getAllGroups() {
-    return this.groupService.getGroups();
+  getAllGroups(@Query() paginationGroupDto: PaginationGroupDto) {
+    return this.groupService.getGroups(paginationGroupDto);
   }
+
+  @UseGuards(JwtGuard)
+  @Get('filtered')
+  getFilteredGroups(
+    @Query() filterGroupDto: FilteredGroupDto,
+    @Query() paginationGroupDto: PaginationGroupDto,
+  ) {
+    if (Object.keys(filterGroupDto).length) {
+      return this.groupService.getFilteredGroups(
+        filterGroupDto,
+        paginationGroupDto,
+      );
+    } else return this.groupService.getGroups(paginationGroupDto);
+  }
+
   @UseGuards(JwtGuard)
   @Get(':id')
   getGroupById(@Param('id', ParseIntPipe) groupId: number) {

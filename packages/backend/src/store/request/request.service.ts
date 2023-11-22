@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { FilteredRequestsDto, PaginationRequestsDto } from './dto';
 
 @Injectable()
 export class RequestService {
@@ -29,6 +30,64 @@ export class RequestService {
       }
       throw error;
     }
+  }
+
+  async getFilteredRequests(
+    filterRequestDto: FilteredRequestsDto,
+    paginationRequestDto: PaginationRequestsDto,
+  ) {
+    try {
+      const requests = await this.prisma.request.findMany({
+        take: Number(paginationRequestDto.top)
+          ? Number(paginationRequestDto.top)
+          : 10,
+        skip: Number(paginationRequestDto.skip)
+          ? Number(paginationRequestDto.skip)
+          : 0,
+        where: {
+          OR: [
+            {
+              sender: {
+                lastName: {
+                  contains: filterRequestDto.sender,
+                  mode: 'insensitive',
+                },
+              },
+            },
+            {
+              sender: {
+                firstName: {
+                  contains: filterRequestDto.sender,
+                  mode: 'insensitive',
+                },
+              },
+            },
+            {
+              receiver: {
+                lastName: {
+                  contains: filterRequestDto.receiver,
+                  mode: 'insensitive',
+                },
+              },
+            },
+            {
+              receiver: {
+                firstName: {
+                  contains: filterRequestDto.receiver,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          ],
+        },
+        select: {
+          sender: true,
+          receiver: true,
+          id: true,
+        },
+      });
+      return requests;
+    } catch (error) {}
   }
 
   async removeRequest(userId: number, destinationId: number) {
@@ -69,9 +128,15 @@ export class RequestService {
     }
   }
 
-  async getRequests() {
+  async getRequests(paginationRequestDto: PaginationRequestsDto) {
     try {
       const requests = await this.prisma.request.findMany({
+        take: Number(paginationRequestDto.top)
+          ? Number(paginationRequestDto.top)
+          : 10,
+        skip: Number(paginationRequestDto.skip)
+          ? Number(paginationRequestDto.skip)
+          : 0,
         select: {
           sender: true,
           receiver: true,

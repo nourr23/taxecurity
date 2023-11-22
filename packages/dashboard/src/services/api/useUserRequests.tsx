@@ -2,25 +2,44 @@ import type { AxiosError } from "axios";
 import { createQuery } from "react-query-kit";
 import { client } from "../global/apiClient";
 import { getItem } from "../../core/storage";
+import { useQuery } from "@tanstack/react-query";
 
-type Response = [];
-type Variables = void; // as react-query-kit is strongly typed, we need to specify the type of the variables as void in case we don't need them
+type Pagination = {
+  pageNumber?: number;
+  limitPerPage?: number;
+};
+const getFilteredRequests = async (
+  variables: string,
+  pagination: Pagination
+) => {
+  const { data } = await client.get(
+    `request/filtered?sender=${variables}&receiver=${variables}&skip=${pagination.pageNumber}`,
+    {
+      timeout: 2000, // since it can be heavy too
+      headers: {
+        Authorization: `Bearer ${getItem("auth")}`,
+        "Access-Control-Allow-Origin": "*",
+      },
+    }
+  );
+  return data;
+};
 
-export const useUserRequests = createQuery<Response, Variables, AxiosError>({
-  primaryKey: "user-requests", // we recommend using  endpoint base url as primaryKey
-  queryFn: () => {
-    return client
-      .get(`request`, {
-        headers: {
-          Authorization: `Bearer ${getItem("auth")}`,
-          "Access-Control-Allow-Origin": "*",
-        },
-      })
-      .then((response) => response.data)
-      .catch((error) => {
-        console.log("error.response");
-        console.log(error.response);
-        throw error;
-      });
-  },
-});
+export function useUserRequests(variables: string, pagination: Pagination) {
+  return useQuery<any>(
+    ["user-requests", variables, pagination],
+    () => getFilteredRequests(variables, pagination),
+    {
+      retry: true,
+      keepPreviousData: true,
+      refetchOnReconnect: true,
+      refetchOnWindowFocus: true,
+      cacheTime: 1000 * 60 * 60,
+      // enabled: variables.length > 2 || variables.length === 0,
+      onError: (error: any) => {
+        // showError(error);
+      },
+      onSuccess(data) {},
+    }
+  );
+}
