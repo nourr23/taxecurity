@@ -27,7 +27,7 @@ export class RequestController {
 
   @UseGuards(JwtGuard)
   @Get('filtered')
-  getFilteredUsers(
+  getFilteredRequests(
     @Query() filterRequestDto: FilteredRequestsDto,
     @Query() paginationRequestDto: PaginationRequestsDto,
   ) {

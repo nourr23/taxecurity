@@ -8,12 +8,17 @@ import {
   Delete,
   ParseIntPipe,
   Post,
+  Query,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { GetUser } from 'src/store/auth/decorator';
 import { JwtGuard } from 'src/store/auth/guard';
 import { CreateGroupRequestDto } from './dto';
 import { GroupRequestService } from './group-request.service';
+import {
+  FilteredGroupRequestsDto,
+  PaginationGroupRequestsDto,
+} from './dto/filtered-group-requests';
 
 @Controller('group-requests')
 export class GroupRequestController {
@@ -21,8 +26,24 @@ export class GroupRequestController {
 
   @UseGuards(JwtGuard)
   @Get()
-  getAllRequests() {
-    return this.requestService.getRequests();
+  getAllRequests(
+    @Query() paginationGroupRequestDto: PaginationGroupRequestsDto,
+  ) {
+    return this.requestService.getRequests(paginationGroupRequestDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('filtered')
+  getFilteredUsers(
+    @Query() filterGroupRequestDto: FilteredGroupRequestsDto,
+    @Query() paginationGroupRequestDto: PaginationGroupRequestsDto,
+  ) {
+    if (Object.keys(filterGroupRequestDto).length) {
+      return this.requestService.getFilteredGroupRequests(
+        filterGroupRequestDto,
+        paginationGroupRequestDto,
+      );
+    } else return this.requestService.getRequests(paginationGroupRequestDto);
   }
 
   @UseGuards(JwtGuard)
