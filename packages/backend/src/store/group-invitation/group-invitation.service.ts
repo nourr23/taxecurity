@@ -8,6 +8,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGroupInvitationDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { GroupService } from 'src/store/group/group.service';
+import {
+  FilteredGroupInvitationsDto,
+  PaginationGroupInvitationsDto,
+} from './dto/filtered-group-invitaion';
 
 @Injectable()
 export class GroupInvitationService {
@@ -16,15 +20,95 @@ export class GroupInvitationService {
     private groupService: GroupService,
   ) {}
 
-  async getAllInvitations() {
+  async getAllInvitations(
+    paginationGroupInvitationDto: PaginationGroupInvitationsDto,
+  ) {
     try {
-      const invitations = await this.prisma.groupInvitation.findMany({});
+      const invitations = await this.prisma.groupInvitation.findMany({
+        take: Number(paginationGroupInvitationDto.top)
+          ? Number(paginationGroupInvitationDto.top)
+          : 10,
+        skip: Number(paginationGroupInvitationDto.skip)
+          ? Number(paginationGroupInvitationDto.skip)
+          : 0,
+        select: {
+          receiver: true,
+          creator: true,
+          group: true,
+          id: true,
+        },
+      });
       return invitations;
     } catch (error) {
       console.log(error);
     }
   }
-
+  async getFilteredGroupInvitations(
+    filterGroupInvitationsDto: FilteredGroupInvitationsDto,
+    paginationGroupInvitationDto: PaginationGroupInvitationsDto,
+  ) {
+    try {
+      const requests = await this.prisma.groupInvitation.findMany({
+        take: Number(paginationGroupInvitationDto.top)
+          ? Number(paginationGroupInvitationDto.top)
+          : 10,
+        skip: Number(paginationGroupInvitationDto.skip)
+          ? Number(paginationGroupInvitationDto.skip)
+          : 0,
+        where: {
+          OR: [
+            {
+              receiver: {
+                lastName: {
+                  contains: filterGroupInvitationsDto.receiver,
+                  mode: 'insensitive',
+                },
+              },
+            },
+            {
+              receiver: {
+                firstName: {
+                  contains: filterGroupInvitationsDto.receiver,
+                  mode: 'insensitive',
+                },
+              },
+            },
+            {
+              creator: {
+                lastName: {
+                  contains: filterGroupInvitationsDto.creator,
+                  mode: 'insensitive',
+                },
+              },
+            },
+            {
+              creator: {
+                firstName: {
+                  contains: filterGroupInvitationsDto.creator,
+                  mode: 'insensitive',
+                },
+              },
+            },
+            {
+              group: {
+                name: {
+                  contains: filterGroupInvitationsDto.group_name,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          ],
+        },
+        select: {
+          receiver: true,
+          creator: true,
+          group: true,
+          id: true,
+        },
+      });
+      return requests;
+    } catch (error) {}
+  }
   async getInvitationById(userId: number, invitationId: number) {
     try {
       const invitation = await this.prisma.groupInvitation.findUnique({

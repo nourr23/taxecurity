@@ -8,6 +8,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { CreateGroupRequestDto } from './dto';
 import { GroupService } from 'src/store/group/group.service';
+import {
+  FilteredGroupRequestsDto,
+  PaginationGroupRequestsDto,
+} from './dto/filtered-group-requests';
 
 @Injectable()
 export class GroupRequestService {
@@ -16,13 +20,93 @@ export class GroupRequestService {
     private groupService: GroupService,
   ) {}
 
-  async getRequests() {
+  async getRequests(paginationGroupRequestDto: PaginationGroupRequestsDto) {
     try {
-      const requests = await this.prisma.groupRequest.findMany({});
+      const requests = await this.prisma.groupRequest.findMany({
+        take: Number(paginationGroupRequestDto.top)
+          ? Number(paginationGroupRequestDto.top)
+          : 10,
+        skip: Number(paginationGroupRequestDto.skip)
+          ? Number(paginationGroupRequestDto.skip)
+          : 0,
+        select: {
+          sender: true,
+          creator: true,
+          Group: true,
+          id: true,
+        },
+      });
       return requests;
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async getFilteredGroupRequests(
+    filterGroupRequestDto: FilteredGroupRequestsDto,
+    paginationGroupRequestDto: PaginationGroupRequestsDto,
+  ) {
+    try {
+      const requests = await this.prisma.groupRequest.findMany({
+        take: Number(paginationGroupRequestDto.top)
+          ? Number(paginationGroupRequestDto.top)
+          : 10,
+        skip: Number(paginationGroupRequestDto.skip)
+          ? Number(paginationGroupRequestDto.skip)
+          : 0,
+        where: {
+          OR: [
+            {
+              sender: {
+                lastName: {
+                  contains: filterGroupRequestDto.sender,
+                  mode: 'insensitive',
+                },
+              },
+            },
+            {
+              sender: {
+                firstName: {
+                  contains: filterGroupRequestDto.sender,
+                  mode: 'insensitive',
+                },
+              },
+            },
+            {
+              creator: {
+                lastName: {
+                  contains: filterGroupRequestDto.creator,
+                  mode: 'insensitive',
+                },
+              },
+            },
+            {
+              creator: {
+                firstName: {
+                  contains: filterGroupRequestDto.creator,
+                  mode: 'insensitive',
+                },
+              },
+            },
+            {
+              Group: {
+                name: {
+                  contains: filterGroupRequestDto.group_name,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          ],
+        },
+        select: {
+          sender: true,
+          creator: true,
+          Group: true,
+          id: true,
+        },
+      });
+      return requests;
+    } catch (error) {}
   }
 
   async getRequestById(userId: number, requestId: number) {

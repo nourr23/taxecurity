@@ -8,12 +8,17 @@ import {
   Delete,
   ParseIntPipe,
   Post,
+  Query,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { GetUser } from 'src/store/auth/decorator';
 import { JwtGuard } from 'src/store/auth/guard';
 import { CreateGroupInvitationDto } from './dto';
 import { GroupInvitationService } from './group-invitation.service';
+import {
+  FilteredGroupInvitationsDto,
+  PaginationGroupInvitationsDto,
+} from './dto/filtered-group-invitaion';
 
 @Controller('group-invitations')
 export class GroupInvitationController {
@@ -21,8 +26,28 @@ export class GroupInvitationController {
 
   @UseGuards(JwtGuard)
   @Get()
-  getAllInvitations() {
-    return this.groupInvitationService.getAllInvitations();
+  getAllInvitations(
+    @Query() paginationGroupInvitationDto: PaginationGroupInvitationsDto,
+  ) {
+    return this.groupInvitationService.getAllInvitations(
+      paginationGroupInvitationDto,
+    );
+  }
+  @UseGuards(JwtGuard)
+  @Get('filtered')
+  getFilteredUsers(
+    @Query() filterGroupInvitationsDto: FilteredGroupInvitationsDto,
+    @Query() paginationGroupInvitationDto: PaginationGroupInvitationsDto,
+  ) {
+    if (Object.keys(filterGroupInvitationsDto).length) {
+      return this.groupInvitationService.getFilteredGroupInvitations(
+        filterGroupInvitationsDto,
+        paginationGroupInvitationDto,
+      );
+    } else
+      return this.groupInvitationService.getAllInvitations(
+        paginationGroupInvitationDto,
+      );
   }
 
   @UseGuards(JwtGuard)
@@ -63,7 +88,7 @@ export class GroupInvitationController {
 
   @UseGuards(JwtGuard)
   @Post('accept')
-  acceptGroupRequest(
+  acceptGroupInvitations(
     @GetUser('id') userId: number,
     @Body('inviteId') inviteId: number,
   ) {
