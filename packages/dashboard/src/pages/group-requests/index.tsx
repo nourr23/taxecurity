@@ -10,7 +10,6 @@ const GroupRequestsPage = () => {
   const [search, setSearch] = useState("");
   const { data, isLoading, isFetching, isFetched, isSuccess, isError } =
     useGroupRequests(search, { limitPerPage: 10, pageNumber });
-  console.log("group requests", data);
 
   const onSearch = (e: any) => {
     e.preventDefault();
@@ -31,32 +30,52 @@ const GroupRequestsPage = () => {
         {isLoading || isFetching ? (
           <span>loading</span>
         ) : isFetched || isSuccess || data ? (
-          <Table>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Group</Table.HeaderCell>
-                <Table.HeaderCell>Sender</Table.HeaderCell>
-                <Table.HeaderCell>Group Admin</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {data.map((item: any) => (
-                <Table.Row key={item.id}>
-                  <Table.Cell>{item.Group.name}</Table.Cell>
-                  <Table.Cell>
-                    <Link to={`/users/${item.sender.id}`}>
-                      {item.sender.firstName} {item.sender.lastName}
-                    </Link>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Link to={`/users/${item.creator.id}`}>
-                      {item.creator.firstName} {item.creator.lastName}
-                    </Link>
-                  </Table.Cell>
+          <>
+            <Table>
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>Group</Table.HeaderCell>
+                  <Table.HeaderCell>Sender</Table.HeaderCell>
+                  <Table.HeaderCell>Group Admin</Table.HeaderCell>
                 </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
+              </Table.Header>
+              <Table.Body>
+                {data.map((item: any) => (
+                  <Table.Row key={item.id}>
+                    <Table.Cell>{item.Group.name}</Table.Cell>
+                    <Table.Cell>
+                      <Link to={`/users/${item.sender.id}`}>
+                        {item.sender.firstName} {item.sender.lastName}
+                      </Link>
+                    </Table.Cell>
+                    <Table.Cell>
+                      <Link to={`/users/${item.creator.id}`}>
+                        {item.creator.firstName} {item.creator.lastName}
+                      </Link>
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+
+            <div className="flex mt-4 items-center font-bold text-blue-500">
+              <button
+                disabled={pageNumber === 0}
+                onClick={() => {
+                  pageNumber > 0 && setPageNumber((prev) => prev - 10);
+                }}
+              >
+                <MdKeyboardArrowLeft size={32} color={"#3b82f6"} />
+              </button>
+              <div className="mx-2">page {pageNumber / 10 + 1} </div>
+              <button
+                disabled={data.length < 10}
+                onClick={() => setPageNumber((prev) => prev + 10)}
+              >
+                <MdKeyboardArrowRight size={32} color={"#3b82f6"} />
+              </button>
+            </div>
+          </>
         ) : null}
       </div>
     </>
