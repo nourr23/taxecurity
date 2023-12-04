@@ -2,8 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { setOpenedSideBarFct, useAppStore } from "../../core";
 
 const Navbar = () => {
-  const { opened_side_bar } = useAppStore();
-  console.log({ opened_side_bar });
+  const { openedSideBar } = useAppStore();
   const location = useLocation();
 
   const RenderedLinks = () => {
@@ -88,7 +87,7 @@ const Navbar = () => {
         </div>
         <RenderedLinks />
       </div>
-      {opened_side_bar && (
+      {openedSideBar && (
         <div className=" h-[100vh] w-full md:hidden flex absolute  top-0 left-0 bg-black/60">
           <div className="h-full w-[260px] flex-col border-r-2 bg-white">
             <div className="w-full h-[113px] border-b-2 flex items-center justify-center text-xl font-bold">
