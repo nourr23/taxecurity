@@ -78,23 +78,23 @@ const UsersPage = () => {
                     ))}
                   </Table.Body>
                 </Table>
-                <div className="flex mt-4 items-center font-bold text-blue-500">
-                  <button
-                    disabled={pageNumber === 0}
-                    onClick={() => {
-                      pageNumber > 0 && setPageNumber((prev) => prev - 10);
-                    }}
-                  >
-                    <MdKeyboardArrowLeft size={32} color={"#3b82f6"} />
-                  </button>
-                  <div className="mx-2">page {pageNumber / 10 + 1} </div>
-                  <button
-                    disabled={data.length < 10}
-                    onClick={() => setPageNumber((prev) => prev + 10)}
-                  >
-                    <MdKeyboardArrowRight size={32} color={"#3b82f6"} />
-                  </button>
-                </div>
+              </div>
+              <div className="flex mt-4 items-center font-bold text-blue-500">
+                <button
+                  disabled={pageNumber === 0}
+                  onClick={() => {
+                    pageNumber > 0 && setPageNumber((prev) => prev - 10);
+                  }}
+                >
+                  <MdKeyboardArrowLeft size={32} color={"#3b82f6"} />
+                </button>
+                <div className="mx-2">page {pageNumber / 10 + 1} </div>
+                <button
+                  disabled={data.length < 10}
+                  onClick={() => setPageNumber((prev) => prev + 10)}
+                >
+                  <MdKeyboardArrowRight size={32} color={"#3b82f6"} />
+                </button>
               </div>
             </>
           )

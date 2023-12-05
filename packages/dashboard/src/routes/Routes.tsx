@@ -14,7 +14,7 @@ const RoutesLayout = () => {
         data && (
           <div>
             <div className="flex">
-              <div className="hidden md:block">
+              <div className="">
                 <Navbar />
               </div>
               <div className="flex-1">
