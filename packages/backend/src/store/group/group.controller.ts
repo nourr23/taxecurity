@@ -1,0 +1,95 @@
+import {
+  Controller,
+  Get,
+  UseGuards,
+  Patch,
+  Body,
+  Param,
+  Delete,
+  ParseIntPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { GetUser } from 'src/store/auth/decorator';
+import { JwtGuard } from 'src/store/auth/guard';
+import {
+  CreateGroupDto,
+  FilteredGroupDto,
+  PaginationGroupDto,
+  UpdateGroupDto,
+} from './dto';
+import { GroupService } from './group.service';
+
+@Controller('groups')
+export class GroupController {
+  constructor(private groupService: GroupService) {}
+
+  //admin
+  @UseGuards(JwtGuard)
+  @Get()
+  getAllGroups(@Query() paginationGroupDto: PaginationGroupDto) {
+    return this.groupService.getGroups(paginationGroupDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('filtered')
+  getFilteredGroups(
+    @Query() filterGroupDto: FilteredGroupDto,
+    @Query() paginationGroupDto: PaginationGroupDto,
+  ) {
+    if (Object.keys(filterGroupDto).length) {
+      return this.groupService.getFilteredGroups(
+        filterGroupDto,
+        paginationGroupDto,
+      );
+    } else return this.groupService.getGroups(paginationGroupDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':id')
+  getGroupById(@Param('id', ParseIntPipe) groupId: number) {
+    return this.groupService.getGroupById(groupId);
+  }
+
+  //users
+  @UseGuards(JwtGuard)
+  @Delete(':id')
+  removeGroup(
+    @Param('id', ParseIntPipe) groupId: number,
+    @GetUser('id') userId: number,
+  ) {
+    return this.groupService.deleteGroup(groupId, userId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Patch(':id')
+  updateGroup(
+    @Param('id', ParseIntPipe) groupId: number,
+    @GetUser('id') userId: number,
+    @Body() dto: UpdateGroupDto,
+  ) {
+    return this.groupService.updateGroup(groupId, userId, dto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post()
+  createGroup(@GetUser('id') userId: number, @Body() dto: CreateGroupDto) {
+    return this.groupService.createGroup(dto, userId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('kick')
+  kickUserFromGroup(
+    @GetUser('id') userId: number,
+    @Body('targetId') targetId: number,
+    @Body('groupId') groupId: number,
+  ) {
+    return this.groupService.kickUserFromGroup(userId, groupId, targetId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('leave')
+  leaveGroup(@GetUser('id') userId: number, @Body('groupId') groupId: number) {
+    return this.groupService.leaveGroup(userId, groupId);
+  }
+}

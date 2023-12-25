@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  phone_number String   @unique
+  email        String?  @unique
+  hash         String
+  firstName    String
+  lastName     String
+  age          Int?
+  city         String?
+  taxi_number  Int?
+
+  alerts                  Alert[]
+  followedBy              User[]            @relation("UserFollows")
+  following               User[]            @relation("UserFollows")
+  requestSent             Request[]         @relation("requestSent")
+  requestReceived         Request[]         @relation("requestReceived")
+  groups                  Group[]           @relation("groups")
+  GroupCreated            Group[]           @relation("groupCreator")
+  GroupInvitationSent     GroupInvitation[] @relation("groupInvitor")
+  GroupInvitationRecieved GroupInvitation[] @relation("groupInvited")
+  GroupRequestsSent       GroupRequest[]    @relation("groupRequestSender")
+  GroupRequestsRecieved   GroupRequest[]    @relation("groupRequestReceiver")
+
+  @@map("User")
+}
+
+model Alert {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status    String
+  type      String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("Alert")
+}
+
+model Request {
+  senderId   Int
+  receiverId Int
+  id         Int  @id @default(autoincrement())
+  receiver   User @relation("requestReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+  sender     User @relation("requestSent", fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@unique([senderId, receiverId])
+  @@map("Request")
+}
+
+model Group {
+  id                   Int               @id @default(autoincrement())
+  name                 String
+  creatorId            Int
+  active               Boolean
+  creator              User              @relation("groupCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  GroupInvitationsSent GroupInvitation[]
+  GroupRequest         GroupRequest[]
+  users                User[]            @relation("groups")
+
+  @@map("Group")
+}
+
+model GroupInvitation {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  creatorId  Int
+  receiverId Int
+  groupId    Int
+  creator    User     @relation("groupInvitor", fields: [creatorId], references: [id], onDelete: Cascade)
+  group      Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  receiver   User     @relation("groupInvited", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@unique([creatorId, receiverId, groupId])
+  @@map("GroupInvitation")
+}
+
+model GroupRequest {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  creatorId Int
+  senderId  Int
+  groupId   Int?
+  creator   User     @relation("groupRequestSender", fields: [creatorId], references: [id], onDelete: Cascade)
+  Group     Group?   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  sender    User     @relation("groupRequestReceiver", fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@unique([creatorId, senderId, groupId])
+  @@map("GroupRequest")
+}
+
+model Admin {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  phone_number String   @unique
+  email        String?  @unique
+  hash         String   @unique
+  firstName    String
+  lastName     String
+
+  @@map("Admin")
+}
