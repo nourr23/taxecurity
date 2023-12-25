@@ -10,8 +10,8 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { GetUser } from 'src/store/auth/decorator';
-import { JwtGuard } from 'src/store/auth/guard';
+import { GetUser } from 'src/auth/decorator';
+import { JwtGuard } from 'src/auth/guard';
 import {
   CreateGroupDto,
   FilteredGroupDto,
@@ -19,18 +19,21 @@ import {
   UpdateGroupDto,
 } from './dto';
 import { GroupService } from './group.service';
+import { HasRole } from 'src/auth/decorator/has-role.decorator';
+import { Role } from 'src/auth/enums';
 
 @Controller('groups')
 export class GroupController {
   constructor(private groupService: GroupService) {}
 
-  //admin
+  @HasRole(Role.Admin)
   @UseGuards(JwtGuard)
   @Get()
   getAllGroups(@Query() paginationGroupDto: PaginationGroupDto) {
     return this.groupService.getGroups(paginationGroupDto);
   }
 
+  @HasRole(Role.Admin)
   @UseGuards(JwtGuard)
   @Get('filtered')
   getFilteredGroups(
@@ -45,13 +48,14 @@ export class GroupController {
     } else return this.groupService.getGroups(paginationGroupDto);
   }
 
+  @HasRole(Role.Admin)
   @UseGuards(JwtGuard)
   @Get(':id')
   getGroupById(@Param('id', ParseIntPipe) groupId: number) {
     return this.groupService.getGroupById(groupId);
   }
 
-  //users
+  @HasRole(Role.Driver)
   @UseGuards(JwtGuard)
   @Delete(':id')
   removeGroup(
@@ -61,6 +65,7 @@ export class GroupController {
     return this.groupService.deleteGroup(groupId, userId);
   }
 
+  @HasRole(Role.Driver)
   @UseGuards(JwtGuard)
   @Patch(':id')
   updateGroup(
@@ -71,12 +76,14 @@ export class GroupController {
     return this.groupService.updateGroup(groupId, userId, dto);
   }
 
+  @HasRole(Role.Driver)
   @UseGuards(JwtGuard)
   @Post()
   createGroup(@GetUser('id') userId: number, @Body() dto: CreateGroupDto) {
     return this.groupService.createGroup(dto, userId);
   }
 
+  @HasRole(Role.Driver)
   @UseGuards(JwtGuard)
   @Post('kick')
   kickUserFromGroup(
@@ -87,6 +94,7 @@ export class GroupController {
     return this.groupService.kickUserFromGroup(userId, groupId, targetId);
   }
 
+  @HasRole(Role.Driver)
   @UseGuards(JwtGuard)
   @Post('leave')
   leaveGroup(@GetUser('id') userId: number, @Body('groupId') groupId: number) {
