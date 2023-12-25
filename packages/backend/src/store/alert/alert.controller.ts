@@ -9,8 +9,8 @@ import {
   ParseIntPipe,
   Post,
 } from '@nestjs/common';
-import { GetUser } from 'src/store/auth/decorator';
-import { JwtGuard } from 'src/store/auth/guard';
+import { GetUser } from 'src/auth/decorator';
+import { JwtGuard } from 'src/auth/guard';
 import { AlertService } from './alert.service';
 import { CreateAlertDto, EditAlertDto } from './dto';
 
