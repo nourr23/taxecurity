@@ -10,7 +10,7 @@ export class EditUserDto {
 
   @IsString()
   @IsOptional()
-  phone_number?: string;
+  phone?: string;
 
   @IsString()
   @IsOptional()

@@ -35,7 +35,7 @@ type Variables = {
   email: string;
   firstName: string;
   lastName: string;
-  phone_number: string;
+  phone: string;
 };
 
 type Pagination = {
@@ -44,7 +44,7 @@ type Pagination = {
 };
 const getFilteredUser = async (variables: string, pagination: Pagination) => {
   const { data } = await client.get(
-    `users/filtered?lastName=${variables}&firstName=${variables}&email=${variables}&phone_number=${variables}&skip=${pagination.pageNumber}`,
+    `users/filtered?lastName=${variables}&firstName=${variables}&email=${variables}&phone=${variables}&skip=${pagination.pageNumber}`,
     {
       timeout: 2000, // since it can be heavy too
       headers: {
