@@ -20,11 +20,16 @@ import {
   PaginationGroupInvitationsDto,
 } from './dto/filtered-group-invitaion';
 
+import { HasRole } from 'src/auth/decorator/has-role.decorator';
+import { Role } from 'src/auth/enums';
+import { RolesGuard } from 'src/auth/guard/role.guard';
+
+@UseGuards(JwtGuard, RolesGuard)
 @Controller('group-invitations')
 export class GroupInvitationController {
   constructor(private groupInvitationService: GroupInvitationService) {}
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Admin)
   @Get()
   getAllInvitations(
     @Query() paginationGroupInvitationDto: PaginationGroupInvitationsDto,
@@ -33,7 +38,7 @@ export class GroupInvitationController {
       paginationGroupInvitationDto,
     );
   }
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Admin)
   @Get('filtered')
   getFilteredUsers(
     @Query() filterGroupInvitationsDto: FilteredGroupInvitationsDto,
@@ -50,7 +55,7 @@ export class GroupInvitationController {
       );
   }
 
-  @UseGuards(JwtGuard)
+  // both roles can get group-invitations by id
   @Get(':id')
   getInvitationById(
     @GetUser('id') userId: number,
@@ -59,7 +64,7 @@ export class GroupInvitationController {
     return this.groupInvitationService.getInvitationById(userId, invitationId);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Post()
   createGroupInvitation(
     @GetUser('id') userId: number,
@@ -68,7 +73,7 @@ export class GroupInvitationController {
     return this.groupInvitationService.createGroupInvitation(userId, dto);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Delete('remove/:id')
   removeInvitation(
     @GetUser('id') userId: number,
@@ -77,7 +82,7 @@ export class GroupInvitationController {
     return this.groupInvitationService.removeInvitation(userId, invitationId);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Delete('decline/:id')
   declineInvitation(
     @GetUser('id') userId: number,
@@ -86,7 +91,7 @@ export class GroupInvitationController {
     return this.groupInvitationService.declineInvitation(userId, invitationId);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Post('accept')
   acceptGroupInvitations(
     @GetUser('id') userId: number,

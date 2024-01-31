@@ -14,11 +14,16 @@ import { GetUser } from 'src/auth/decorator';
 import { JwtGuard } from 'src/auth/guard';
 import { EditUserDto, FilteredUserDto, PaginationUserDto } from './dto';
 import { UserService } from './user.service';
+import { HasRole } from 'src/auth/decorator/has-role.decorator';
+import { Role } from 'src/auth/enums';
+import { RolesGuard } from 'src/auth/guard/role.guard';
 
+@UseGuards(JwtGuard, RolesGuard)
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
-  @UseGuards(JwtGuard)
+
+  //both roles
   @Get()
   getAllUsers(
     @Query('skip', ParseIntPipe) paginationUserDto: PaginationUserDto,
@@ -26,7 +31,7 @@ export class UserController {
     return this.userService.getAllUsers(paginationUserDto);
   }
 
-  @UseGuards(JwtGuard)
+  //both roles
   @Get('filtered')
   getFilteredUsers(
     @Query() filterUserDto: FilteredUserDto,
@@ -40,33 +45,33 @@ export class UserController {
     } else return this.userService.getAllUsers(paginationUserDto);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Get('me')
   getMe(@GetUser() user: User) {
     return user;
   }
 
-  @UseGuards(JwtGuard)
+  //both roles
   @Get(':id')
   getUserById(@Param('id') id: string) {
     const userId = parseInt(id);
     return this.userService.getUserById(userId);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Patch()
   editUser(@GetUser('id') userId: number, @Body() dto: EditUserDto) {
     this.userService.editUser(userId, dto);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Admin)
   @Delete(':id')
   removeUser(@Param('id') id: string) {
     const userId = parseInt(id);
-    return this.userService.removeUser(userId); // to refactor; only the admin can delete a user
+    return this.userService.removeUser(userId);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Patch('add_follower')
   addFollower(
     @GetUser('id') userId: number,
@@ -75,7 +80,7 @@ export class UserController {
     this.userService.acceptRequest(userId, followerId);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Patch('remove_follower')
   removeFollower(
     @GetUser('id') userId: number,
@@ -83,7 +88,8 @@ export class UserController {
   ) {
     this.userService.removeFromList(userId, followerId);
   }
-  @UseGuards(JwtGuard)
+
+  @HasRole(Role.Driver)
   @Patch('unfollow')
   unfollow(
     @GetUser('id') userId: number,
