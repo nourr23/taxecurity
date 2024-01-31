@@ -18,7 +18,7 @@ const UsersPage = () => {
       >
         <h1>{user.firstName}</h1>
         <h1>{user.lastName}</h1>
-        <h1>{user.phone_number}</h1>
+        <h1>{user.phone}</h1>
         <h1>{user.email}</h1>
       </Link>
     );
@@ -72,7 +72,7 @@ const UsersPage = () => {
                             {user.firstName} {user.lastName}
                           </Link>
                         </Table.Cell>
-                        <Table.Cell>{user.phone_number}</Table.Cell>
+                        <Table.Cell>{user.phone}</Table.Cell>
                         <Table.Cell>{user.email}</Table.Cell>
                       </Table.Row>
                     ))}

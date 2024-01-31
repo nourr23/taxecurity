@@ -73,7 +73,7 @@ export class UserService {
                 mode: 'insensitive',
               },
             },
-            { phone: { contains: filterUserDto.phone_number } },
+            { phone: { contains: filterUserDto.phone } },
           ],
         },
         select: {

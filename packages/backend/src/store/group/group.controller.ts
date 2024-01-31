@@ -21,20 +21,20 @@ import {
 import { GroupService } from './group.service';
 import { HasRole } from 'src/auth/decorator/has-role.decorator';
 import { Role } from 'src/auth/enums';
+import { RolesGuard } from 'src/auth/guard/role.guard';
 
+@UseGuards(JwtGuard, RolesGuard)
 @Controller('groups')
 export class GroupController {
   constructor(private groupService: GroupService) {}
 
   @HasRole(Role.Admin)
-  @UseGuards(JwtGuard)
   @Get()
   getAllGroups(@Query() paginationGroupDto: PaginationGroupDto) {
     return this.groupService.getGroups(paginationGroupDto);
   }
 
   @HasRole(Role.Admin)
-  @UseGuards(JwtGuard)
   @Get('filtered')
   getFilteredGroups(
     @Query() filterGroupDto: FilteredGroupDto,
@@ -49,14 +49,12 @@ export class GroupController {
   }
 
   @HasRole(Role.Admin)
-  @UseGuards(JwtGuard)
   @Get(':id')
   getGroupById(@Param('id', ParseIntPipe) groupId: number) {
     return this.groupService.getGroupById(groupId);
   }
 
   @HasRole(Role.Driver)
-  @UseGuards(JwtGuard)
   @Delete(':id')
   removeGroup(
     @Param('id', ParseIntPipe) groupId: number,
@@ -66,7 +64,6 @@ export class GroupController {
   }
 
   @HasRole(Role.Driver)
-  @UseGuards(JwtGuard)
   @Patch(':id')
   updateGroup(
     @Param('id', ParseIntPipe) groupId: number,
@@ -77,14 +74,12 @@ export class GroupController {
   }
 
   @HasRole(Role.Driver)
-  @UseGuards(JwtGuard)
   @Post()
   createGroup(@GetUser('id') userId: number, @Body() dto: CreateGroupDto) {
     return this.groupService.createGroup(dto, userId);
   }
 
   @HasRole(Role.Driver)
-  @UseGuards(JwtGuard)
   @Post('kick')
   kickUserFromGroup(
     @GetUser('id') userId: number,
@@ -95,7 +90,6 @@ export class GroupController {
   }
 
   @HasRole(Role.Driver)
-  @UseGuards(JwtGuard)
   @Post('leave')
   leaveGroup(@GetUser('id') userId: number, @Body('groupId') groupId: number) {
     return this.groupService.leaveGroup(userId, groupId);

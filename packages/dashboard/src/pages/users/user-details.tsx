@@ -77,7 +77,7 @@ const UserDetails = () => {
                 <div className="">
                   {user.firstName} {user.lastName}{" "}
                 </div>
-                <div className="">{user.phone_number}</div>
+                <div className="">{user.phone}</div>
                 <div className="flex mt-3">
                   <button
                     onClick={() => deleteUser(user.id)}

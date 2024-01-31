@@ -5,7 +5,7 @@ import { useAuth } from "../../core/auth";
 export function useSignIn() {
   const { signIn } = useAuth();
   return useMutation(
-    (data: any) => client.post("admin/auth/signin", data, { timeout: 5000 }),
+    (data: any) => client.post("auth/signin", data, { timeout: 5000 }),
     // .catch((error) => console.log(error)),
     {
       onError: (error: any) => {
