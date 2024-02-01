@@ -48,13 +48,14 @@ export class GroupController {
     } else return this.groupService.getGroups(paginationGroupDto);
   }
 
-  @HasRole(Role.Admin)
+  // @HasRole(Role.Admin)
   @Get(':id')
   getGroupById(@Param('id', ParseIntPipe) groupId: number) {
     return this.groupService.getGroupById(groupId);
   }
 
-  @HasRole(Role.Driver)
+  // @HasRole(Role.Driver)
+  // @HasRole(Role.Admin)
   @Delete(':id')
   removeGroup(
     @Param('id', ParseIntPipe) groupId: number,
