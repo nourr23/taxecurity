@@ -9,6 +9,7 @@ import { RequestModule } from './store/request/request.module';
 import { GroupModule } from './store/group/group.module';
 import { GroupInvitationModule } from './store/group-invitation/group-invitation.module';
 import { GroupRequestModule } from './store/group-request/group-request.module';
+import { InvitationsModule } from './admin/invitations/invitations.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { GroupRequestModule } from './store/group-request/group-request.module';
     GroupInvitationModule,
     GroupRequestModule,
     WorkerModule,
+    InvitationsModule,
   ],
   controllers: [],
   providers: [],
