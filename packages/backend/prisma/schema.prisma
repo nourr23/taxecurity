@@ -102,14 +102,30 @@ model GroupRequest {
 }
 
 model Admin {
+  id                 Int                  @id @default(autoincrement())
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  phone              String               @unique
+  email              String               @unique
+  hash               String               @unique
+  firstName          String
+  lastName           String
+  type               String
+  status             String
+  workersInvitations WorkersInvitations[]
+
+  @@map("Admin")
+}
+
+model WorkersInvitations {
   id           Int      @id @default(autoincrement())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  phone_number String   @unique
-  email        String?  @unique
-  hash         String   @unique
-  firstName    String
-  lastName     String
+  sentBy       Admin    @relation(fields: [superAdminId], references: [id])
+  superAdminId Int
+  destination  String   @unique
+  status       String
+  rakmSerri    String
 
-  @@map("Admin")
+  @@map("WorkersInvitations")
 }

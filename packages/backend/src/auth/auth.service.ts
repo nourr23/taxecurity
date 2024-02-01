@@ -49,6 +49,7 @@ export class AuthService {
       user = await this.prisma.admin.findUnique({
         where: {
           email: dto.login,
+          // test if worker is active
         },
       });
       if (!user) {

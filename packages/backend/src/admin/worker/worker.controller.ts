@@ -14,4 +14,18 @@ export class WorkerController {
   getMe(@GetUser() admin: Admin) {
     return admin;
   }
+
+  //invite a worker
+
+  //create a worker
+
+  //get all workers
+
+  //get worker by id
+
+  //edit workers
+
+  //maybe delete
+
+  //don't forget to test if the worker is active after login auth service
 }
