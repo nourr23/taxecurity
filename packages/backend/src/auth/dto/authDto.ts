@@ -32,6 +32,7 @@ export class signUpDto {
 export class createAdminDto {
   @IsEmail()
   @IsNotEmpty()
+  @Matches(/^\d{8}$|^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
   email: string;
 
   @IsString()

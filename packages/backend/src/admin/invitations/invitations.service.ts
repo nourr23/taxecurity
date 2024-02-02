@@ -21,6 +21,7 @@ export class InvitationsService {
 
   async createInvitation(userId: number, dto: CreateInvitationDto) {
     try {
+      // dto.destination.toLowerCase();
       const super_admin = await this.prisma.admin.findUnique({
         where: {
           id: userId,
@@ -37,10 +38,10 @@ export class InvitationsService {
           );
           counter += 1;
         }
-
+        const emailToLowerCase = dto.destination.toLowerCase();
         const existing = await this.prisma.workersInvitations.findUnique({
           where: {
-            destination: dto.destination,
+            destination: emailToLowerCase,
           },
         });
         if (existing) {
@@ -48,7 +49,7 @@ export class InvitationsService {
         } else {
           const invitation = this.prisma.workersInvitations.create({
             data: {
-              destination: dto.destination,
+              destination: emailToLowerCase,
               status: 'pending',
               rakmSerri: randomCode,
               sentBy: {
@@ -64,9 +65,10 @@ export class InvitationsService {
 
   async checkInvitation(code: string, destination: string) {
     try {
+      const emailToLowerCase = destination.toLowerCase();
       const invitation = await this.prisma.workersInvitations.findUnique({
         where: {
-          destination: destination,
+          destination: emailToLowerCase,
         },
       });
       if (!invitation) {
@@ -75,7 +77,7 @@ export class InvitationsService {
           error: 'Could not find invitation',
         });
       }
-      if (invitation.rakmSerri == code && invitation.status == '') {
+      if (invitation.rakmSerri == code && invitation.status == 'pending') {
         // maybe only 3 tries then block
         const acceptInvitation = this.prisma.workersInvitations.update({
           where: { id: invitation.id },

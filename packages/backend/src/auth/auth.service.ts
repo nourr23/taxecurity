@@ -26,7 +26,6 @@ export class AuthService {
       }
 
       const hash = await argon.hash(dto.password);
-      // console.log({ dto });
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,
@@ -49,7 +48,7 @@ export class AuthService {
       user = await this.prisma.admin.findUnique({
         where: {
           email: dto.login,
-          // test if worker is active
+          status: 'active', // test if worker is active
         },
       });
       if (!user) {
