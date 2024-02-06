@@ -21,6 +21,17 @@ const Navbar = () => {
             </li>
             <li
               className={`h-[40px] ${
+                location.pathname === "/workers"
+                  ? "text-blue-500"
+                  : "text-gray-500"
+              }  flex items-center font-bold pl-8 hover:bg-gray-100`}
+            >
+              <Link className="w-full" to={"/workers"}>
+                Workers
+              </Link>
+            </li>
+            <li
+              className={`h-[40px] ${
                 location.pathname === "/users"
                   ? "text-blue-500"
                   : "text-gray-500"

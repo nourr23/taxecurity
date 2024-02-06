@@ -12,15 +12,18 @@ import { RouterProvider } from "react-router-dom";
 import APIProvider from "../services/global/APIProvider";
 import { useAuth } from "../core/auth";
 import UserDetails from "../pages/users/user-details";
+import WorkersPage from "../pages/workers";
 
 const Router = () => {
-  const {status} = useAuth()
+  const { status } = useAuth();
   const router = createBrowserRouter([
     {
       path: "/",
-      element: status === 'signIn' ?<RoutesLayout /> : <Navigate to={'/login'} />,
+      element:
+        status === "signIn" ? <RoutesLayout /> : <Navigate to={"/login"} />,
       children: [
         { path: "/", element: <HomePage /> },
+        { path: "/workers", element: <WorkersPage /> },
         { path: "/users", element: <UsersPage /> },
         { path: "/requests", element: <UserRequestsPage /> },
         { path: "/groups", element: <GroupsPage /> },
@@ -31,7 +34,7 @@ const Router = () => {
     },
     {
       path: "/login",
-      element: status !== 'signIn' ? <LoginPage /> : <Navigate to={'/'} />,
+      element: status !== "signIn" ? <LoginPage /> : <Navigate to={"/"} />,
     },
   ]);
 
