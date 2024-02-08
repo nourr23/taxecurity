@@ -6,12 +6,12 @@ export const FormInput = ({
   ...otherProps
 }: any) => {
   return (
-    <div className="h-[70px] mb-2">
+    <div className="h-[70px] mb-1">
       <input
         onChange={handleChange}
         onBlur={handleBlur}
         {...otherProps}
-        className={`h-[50px] w-60 border-2 px-4 outline-none rounded  ${
+        className={`h-[50px] w-68 border-2 px-4 outline-none rounded  ${
           errors && touched ? "border-red-600" : "border-blue-400"
         } `}
       />

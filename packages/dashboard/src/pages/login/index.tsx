@@ -1,7 +1,6 @@
 import React from "react";
 import { useSignIn } from "../../services/api";
 import { loginSchema } from "../../Validations";
-import * as yup from "yup";
 import { useFormik } from "formik";
 import { FormInput } from "../../components/form-input";
 import { useAuth } from "../../core/auth";
