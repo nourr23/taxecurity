@@ -14,7 +14,18 @@ export class InvitationsService {
 
   async getInvitations() {
     try {
-      const request = await this.prisma.workersInvitations.findMany({});
+      const request = await this.prisma.workersInvitations.findMany({
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          destination: true,
+          status: true,
+          sentBy: {
+            select: { firstName: true, lastName: true },
+          },
+        },
+      });
       return request;
     } catch (error) {}
   }
