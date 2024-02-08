@@ -3,11 +3,11 @@ import { getItem } from "../../../core/storage";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export function useSetWorker() {
+export function useSetWorkerInvitation() {
   return useMutation(
     (data: any) =>
       client.patch(
-        `admin/workers/${data.id}`,
+        `workers/invitations/cancel/${data.id}`,
         {
           status: data.status,
         },

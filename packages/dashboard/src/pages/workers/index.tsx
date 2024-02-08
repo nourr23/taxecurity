@@ -24,7 +24,7 @@ const WorkersPage = () => {
       {isLoadingWorkers || isFetchingWorkers ? (
         <div>Is loading</div>
       ) : workers || isSuccessWorkers || isFetchedWorkers ? (
-        <div className=" overflow-x-scroll md:overflow-x-hidden pb-4 max-w-[360px] md:max-w-none">
+        <div className=" overflow-x-scroll sm:overflow-x-hidden pb-4 max-w-[360px] sm:max-w-none">
           <Table>
             <Table.Header>
               <Table.Row>

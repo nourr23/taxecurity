@@ -12,7 +12,7 @@ const WorkerForm = () => {
         firstName: "",
         lastName: "",
         phone: "",
-        code: "024923",
+        code: "513373",
       },
       validationSchema: workerSchema,
       onSubmit: (values) => {
