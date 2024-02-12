@@ -2,7 +2,10 @@ import { useFormik } from "formik";
 import { workerSchema } from "../../Validations";
 import { FormInput } from "../../components/form-input";
 import { useAddWorker } from "../../services/api";
-const WorkerForm = () => {
+import { useLocation } from "react-router";
+const WorkerForm = ({ code }: any) => {
+  const { state } = useLocation();
+
   const { mutateAsync, isLoading, isError, error } = useAddWorker();
   const { values, touched, errors, handleBlur, handleChange, handleSubmit } =
     useFormik({
@@ -12,7 +15,7 @@ const WorkerForm = () => {
         firstName: "",
         lastName: "",
         phone: "",
-        code: "513373",
+        code: state.code,
       },
       validationSchema: workerSchema,
       onSubmit: (values) => {
