@@ -6,15 +6,86 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { CreateInvitationDto } from './dto';
+import {
+  CreateInvitationDto,
+  FilterWorkerInvitationsDto,
+  PaginationWorkerInvitationsDto,
+} from './dto';
 
 @Injectable()
 export class InvitationsService {
   constructor(private prisma: PrismaService) {}
 
-  async getInvitations() {
+  async getInvitations(
+    paginationWorkerInvitationDto: PaginationWorkerInvitationsDto,
+  ) {
     try {
       const request = await this.prisma.workersInvitations.findMany({
+        take: Number(paginationWorkerInvitationDto.top)
+          ? Number(paginationWorkerInvitationDto.top)
+          : 10,
+        skip: Number(paginationWorkerInvitationDto.skip)
+          ? Number(paginationWorkerInvitationDto.skip)
+          : 0,
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          destination: true,
+          status: true,
+          sentBy: {
+            select: { firstName: true, lastName: true },
+          },
+        },
+      });
+      return request;
+    } catch (error) {}
+  }
+
+  async getFilteredWorkerInvitations(
+    filterWorkerInvitationsDto: FilterWorkerInvitationsDto,
+    paginationWorkerInvitationDto: PaginationWorkerInvitationsDto,
+  ) {
+    try {
+      const request = await this.prisma.workersInvitations.findMany({
+        take: Number(paginationWorkerInvitationDto.top)
+          ? Number(paginationWorkerInvitationDto.top)
+          : 10,
+        skip: Number(paginationWorkerInvitationDto.skip)
+          ? Number(paginationWorkerInvitationDto.skip)
+          : 0,
+        where: {
+          OR: [
+            {
+              status: {
+                contains: filterWorkerInvitationsDto.status,
+                mode: 'insensitive',
+              },
+            },
+            {
+              destination: {
+                contains: filterWorkerInvitationsDto.destination,
+                mode: 'insensitive',
+              },
+            },
+            {
+              sentBy: {
+                lastName: {
+                  contains: filterWorkerInvitationsDto.sentBy,
+                  mode: 'insensitive',
+                },
+              },
+            },
+            {
+              sentBy: {
+                firstName: {
+                  contains: filterWorkerInvitationsDto.sentBy,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          ],
+        },
         select: {
           id: true,
           createdAt: true,
@@ -70,8 +141,15 @@ export class InvitationsService {
           });
           return invitation;
         }
+      } else {
+        throw new NotFoundException({
+          status: HttpStatus.UNAUTHORIZED,
+          error: 'Unauthorized',
+        });
       }
-    } catch (error) {}
+    } catch (error) {
+      throw error;
+    }
   }
 
   async checkInvitation(code: string, destination: string) {
