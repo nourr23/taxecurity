@@ -17,7 +17,11 @@ import { JwtGuard } from 'src/auth/guard';
 import { HasRole } from 'src/auth/decorator/has-role.decorator';
 import { Role } from 'src/auth/enums';
 import { RolesGuard } from 'src/auth/guard/role.guard';
-import { CreateInvitationDto } from './dto';
+import {
+  CreateInvitationDto,
+  FilterWorkerInvitationsDto,
+  PaginationWorkerInvitationsDto,
+} from './dto';
 
 @Controller('workers/invitations')
 export class InvitationsController {
@@ -26,8 +30,30 @@ export class InvitationsController {
   @UseGuards(JwtGuard, RolesGuard)
   @HasRole(Role.Admin)
   @Get()
-  getAllInvitations() {
-    return this.invitationsService.getInvitations();
+  getAllInvitations(
+    @Query() paginationWorkerInvitationDto: PaginationWorkerInvitationsDto,
+  ) {
+    return this.invitationsService.getInvitations(
+      paginationWorkerInvitationDto,
+    );
+  }
+
+  @UseGuards(JwtGuard, RolesGuard)
+  @HasRole(Role.Admin)
+  @Get('filtered')
+  getFilteredWorkerInvitations(
+    @Query() filterWorkerInvitationsDto: FilterWorkerInvitationsDto,
+    @Query() paginationWorkerInvitationDto: PaginationWorkerInvitationsDto,
+  ) {
+    if (Object.keys(true).length) {
+      return this.invitationsService.getFilteredWorkerInvitations(
+        filterWorkerInvitationsDto,
+        paginationWorkerInvitationDto,
+      );
+    } else
+      return this.invitationsService.getInvitations(
+        paginationWorkerInvitationDto,
+      );
   }
 
   @UseGuards(JwtGuard, RolesGuard)
