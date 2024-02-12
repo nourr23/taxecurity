@@ -16,6 +16,7 @@ import WorkersPage from "../pages/workers";
 import WorkersInvitationsPage from "../pages/workers-invitations";
 import WorkerForm from "../pages/workers/worker-form";
 import WorkerDetailsPage from "../pages/workers/worker-details";
+import InvitationForm from "../pages/workers-invitations/invitation-form";
 
 const Router = () => {
   const { status } = useAuth();
@@ -44,6 +45,10 @@ const Router = () => {
     {
       path: "/worker-form",
       element: <WorkerForm />,
+    },
+    {
+      path: "/invitation-form",
+      element: <InvitationForm />,
     },
   ]);
 
