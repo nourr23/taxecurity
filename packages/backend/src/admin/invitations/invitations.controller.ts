@@ -45,7 +45,7 @@ export class InvitationsController {
     @Query() filterWorkerInvitationsDto: FilterWorkerInvitationsDto,
     @Query() paginationWorkerInvitationDto: PaginationWorkerInvitationsDto,
   ) {
-    if (Object.keys(true).length) {
+    if (Object.keys(filterWorkerInvitationsDto).length) {
       return this.invitationsService.getFilteredWorkerInvitations(
         filterWorkerInvitationsDto,
         paginationWorkerInvitationDto,
