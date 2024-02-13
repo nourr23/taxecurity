@@ -1,5 +1,5 @@
-import { client } from "../global/apiClient";
-import { getItem } from "../../core/storage";
+import { client } from "../../global/apiClient";
+import { getItem } from "../../../core/storage";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 const deleteUser = async (id: number) => {
@@ -18,7 +18,7 @@ export function useDeleteUser() {
   return useMutation((id: number) => deleteUser(id), {
     onError: (error: any) => {
       // showError(error);
-      console.log(error)
+      console.log(error);
     },
     onSuccess: (data: any) => {},
   });

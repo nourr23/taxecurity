@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { client } from "../global/apiClient";
-import { getItem } from "../../core/storage";
-// import { useAuth } from "../../core/auth";
-import { useAuth } from "../../core/auth";
+import { client } from "../../global/apiClient";
+import { getItem } from "../../../core/storage";
+// import { useAuth } from "../../../core/auth";
+import { useAuth } from "../../../core/auth";
 
 export const getMe = async () => {
   const data = await client.get("admin/workers/me", {

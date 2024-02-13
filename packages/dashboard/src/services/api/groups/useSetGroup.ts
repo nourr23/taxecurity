@@ -1,5 +1,5 @@
-import { client } from "../global/apiClient";
-import { getItem } from "../../core/storage";
+import { client } from "../../global/apiClient";
+import { getItem } from "../../../core/storage";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 

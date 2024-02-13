@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { client } from "../global/apiClient";
-import { useAuth } from "../../core/auth";
+import { client } from "../../global/apiClient";
+import { useAuth } from "../../../core/auth";
 
 export function useSignIn() {
   const { signIn } = useAuth();
@@ -13,7 +13,7 @@ export function useSignIn() {
       },
       onSuccess(response) {
         signIn(response.data.access_token);
-        console.log('1')
+        console.log("1");
       },
     }
   );

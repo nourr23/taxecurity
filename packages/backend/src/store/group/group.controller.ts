@@ -64,7 +64,7 @@ export class GroupController {
     return this.groupService.deleteGroup(groupId, userId);
   }
 
-  @HasRole(Role.Driver)
+  // @HasRole(Role.Driver) both for now
   @Patch(':id')
   updateGroup(
     @Param('id', ParseIntPipe) groupId: number,
