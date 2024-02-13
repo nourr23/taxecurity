@@ -127,6 +127,28 @@ export class WorkerService {
           error: 'Authorization denied',
         });
       }
+      const worker_exist = await this.prisma.admin.findUnique({
+        where: {
+          id: workerId,
+        },
+      });
+      const worker_invitation = await this.prisma.workersInvitations.findUnique(
+        {
+          where: {
+            destination: worker_exist.email,
+          },
+        },
+      );
+      if (worker_invitation) {
+        const set_invitation = await this.prisma.workersInvitations.update({
+          where: {
+            id: worker_invitation.id,
+          },
+          data: {
+            status: 'deleted',
+          },
+        });
+      }
       const worker = await this.prisma.admin.delete({
         where: {
           id: workerId,

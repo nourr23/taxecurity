@@ -102,8 +102,12 @@ const WorkersInvitationsPage = () => {
                           ? "text-green-500 "
                           : invitation.status === "canceled"
                           ? " text-red-500"
+                          : invitation.status === "deleted"
+                          ? " text-orange-700"
+                          : invitation.status === "accepted"
+                          ? " text-purple-500"
                           : " text-blue-700"
-                      }`}
+                      } font-bold capitalize`}
                     >
                       {invitation.status}
                     </Table.Cell>
