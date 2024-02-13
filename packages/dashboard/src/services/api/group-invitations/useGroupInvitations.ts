@@ -1,17 +1,17 @@
-import { client } from "../global/apiClient";
-import { getItem } from "../../core/storage";
+import { client } from "../../global/apiClient";
+import { getItem } from "../../../core/storage";
 import { useQuery } from "@tanstack/react-query";
 
 type Pagination = {
   pageNumber?: number;
   limitPerPage?: number;
 };
-const getFilteredGroupRequests = async (
+const getFilteredGroupInvitations = async (
   variables: string,
   pagination: Pagination
 ) => {
   const { data } = await client.get(
-    `group-requests/filtered?creator=${variables}&group_name=${variables}&sender=${variables}&skip=${pagination.pageNumber}`,
+    `group-invitations/filtered?creator=${variables}&group_name=${variables}&receiver=${variables}&skip=${pagination.pageNumber}`,
     {
       timeout: 2000, // since it can be heavy too
       headers: {
@@ -23,10 +23,10 @@ const getFilteredGroupRequests = async (
   return data;
 };
 
-export function useGroupRequests(variables: string, pagination: Pagination) {
+export function useGroupInvitations(variables: string, pagination: Pagination) {
   return useQuery<any>(
-    ["group-requests", variables, pagination],
-    () => getFilteredGroupRequests(variables, pagination),
+    ["group-invitations", variables, pagination],
+    () => getFilteredGroupInvitations(variables, pagination),
     {
       retry: true,
       keepPreviousData: true,

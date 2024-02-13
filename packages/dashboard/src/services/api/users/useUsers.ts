@@ -27,8 +27,8 @@
 
 import type { AxiosError } from "axios";
 import { createQuery } from "react-query-kit";
-import { client } from "../global/apiClient";
-import { getItem } from "../../core/storage";
+import { client } from "../../global/apiClient";
+import { getItem } from "../../../core/storage";
 import { useQuery } from "@tanstack/react-query";
 
 type Variables = {
