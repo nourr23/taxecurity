@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './store/auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
+import { WorkerModule } from './admin/worker/worker.module';
 import { UserModule } from './store/user/user.module';
 import { AlertModule } from './store/alert/alert.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { ConfigModule } from '@nestjs/config';
 import { RequestModule } from './store/request/request.module';
 import { GroupModule } from './store/group/group.module';
 import { GroupInvitationModule } from './store/group-invitation/group-invitation.module';
 import { GroupRequestModule } from './store/group-request/group-request.module';
-import { AuthAdminModule } from './admin/auth/auth.module';
-import { WorkerModule } from './admin/worker/worker.module';
+import { InvitationsModule } from './admin/invitations/invitations.module';
 
 @Module({
   imports: [
@@ -24,8 +24,8 @@ import { WorkerModule } from './admin/worker/worker.module';
     GroupModule,
     GroupInvitationModule,
     GroupRequestModule,
-    AuthAdminModule,
     WorkerModule,
+    InvitationsModule,
   ],
   controllers: [],
   providers: [],

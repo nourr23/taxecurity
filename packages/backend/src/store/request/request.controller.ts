@@ -11,21 +11,25 @@ import {
   Query,
 } from '@nestjs/common';
 import { RequestService } from './request.service';
-import { GetUser } from 'src/store/auth/decorator';
-import { JwtGuard } from 'src/store/auth/guard';
+import { GetUser } from 'src/auth/decorator';
+import { JwtGuard } from 'src/auth/guard';
 import { FilteredRequestsDto, PaginationRequestsDto } from './dto';
+import { HasRole } from 'src/auth/decorator/has-role.decorator';
+import { Role } from 'src/auth/enums';
+import { RolesGuard } from 'src/auth/guard/role.guard';
 
+@UseGuards(JwtGuard, RolesGuard)
 @Controller('request')
 export class RequestController {
   constructor(private requestService: RequestService) {}
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Admin)
   @Get()
   getAllRequests(@Query() paginationRequestDto: PaginationRequestsDto) {
     return this.requestService.getRequests(paginationRequestDto);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Admin)
   @Get('filtered')
   getFilteredRequests(
     @Query() filterRequestDto: FilteredRequestsDto,
@@ -39,19 +43,19 @@ export class RequestController {
     } else return this.requestService.getRequests(paginationRequestDto);
   }
 
-  @UseGuards(JwtGuard)
+  //both roles? or most likely we wont need it..
   @Get()
   getRequestById(@Body('id', ParseIntPipe) requestId: number) {
     return this.requestService.getRequestById(requestId);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Delete('deleteRequest')
   deleteRequestById(@Body('id', ParseIntPipe) requestId: number) {
     return this.requestService.deleteRequest(requestId);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Post()
   createRequest(
     @GetUser('id') senderId: number,
@@ -60,7 +64,7 @@ export class RequestController {
     return this.requestService.createRequest(senderId, receiverId);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Delete('cancelRequest')
   cancelRequest(
     @GetUser('id') userId: number,
@@ -69,7 +73,7 @@ export class RequestController {
     return this.requestService.removeRequest(userId, destinationId);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Delete('declineRequest')
   declineRequest(
     @GetUser('id') userId: number,

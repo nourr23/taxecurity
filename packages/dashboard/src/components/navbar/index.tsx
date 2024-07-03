@@ -1,7 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import { setOpenedSideBarFct, useAppStore } from "../../core";
+import { useAccount } from "../../services/api";
 
 const Navbar = () => {
+  const { data, isLoading } = useAccount();
   const { openedSideBar } = useAppStore();
   const location = useLocation();
 
@@ -17,6 +19,31 @@ const Navbar = () => {
             >
               <Link className="w-full " to={""}>
                 Home
+              </Link>
+            </li>
+            {data && data.type !== "worker" && (
+              <li
+                className={`h-[40px] ${
+                  location.pathname === "/workers"
+                    ? "text-blue-500"
+                    : "text-gray-500"
+                }  flex items-center font-bold pl-8 hover:bg-gray-100`}
+              >
+                <Link className="w-full" to={"/workers"}>
+                  Workers
+                </Link>
+              </li>
+            )}
+
+            <li
+              className={`h-[40px] ${
+                location.pathname === "/workers-invitations"
+                  ? "text-blue-500"
+                  : "text-gray-500"
+              }  flex items-center font-bold pl-8 hover:bg-gray-100`}
+            >
+              <Link className="w-full" to={"/workers-invitations"}>
+                Workers invitations
               </Link>
             </li>
             <li

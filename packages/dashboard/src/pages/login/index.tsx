@@ -1,10 +1,9 @@
 import React from "react";
 import { useSignIn } from "../../services/api";
 import { loginSchema } from "../../Validations";
-import * as yup from "yup";
 import { useFormik } from "formik";
 import { FormInput } from "../../components/form-input";
-import { useAuth } from '../../core/auth';
+import { useAuth } from "../../core/auth";
 
 const LoginPage = () => {
   const { signIn } = useAuth();
@@ -13,7 +12,7 @@ const LoginPage = () => {
   const { values, touched, errors, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues: {
-        email: "",
+        login: "",
         password: "",
       },
       validationSchema: loginSchema,
@@ -24,8 +23,7 @@ const LoginPage = () => {
 
   const login = async (data: any) => {
     await mutateAsync(data, {
-      onSuccess: (response)  => {
-        
+      onSuccess: (response) => {
         setShowError(false);
       },
       onError: (error) => {
@@ -45,11 +43,11 @@ const LoginPage = () => {
           handleChange={handleChange}
           type="email"
           placeholder="Email"
-          id="email"
-          name="email"
-          value={values.email}
-          errors={errors.email}
-          touched={touched.email}
+          id="login"
+          name="login"
+          value={values.login}
+          errors={errors.login}
+          touched={touched.login}
         />
         <FormInput
           handleBlur={handleBlur}

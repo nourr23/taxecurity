@@ -6,7 +6,7 @@ export class FilteredUserDto {
 
   @IsString()
   @IsOptional()
-  phone_number?: string;
+  phone?: string;
 
   @IsString()
   @IsOptional()

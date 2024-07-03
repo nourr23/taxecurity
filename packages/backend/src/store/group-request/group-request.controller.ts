@@ -11,20 +11,24 @@ import {
   Query,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { GetUser } from 'src/store/auth/decorator';
-import { JwtGuard } from 'src/store/auth/guard';
+import { GetUser } from 'src/auth/decorator';
+import { JwtGuard } from 'src/auth/guard';
 import { CreateGroupRequestDto } from './dto';
 import { GroupRequestService } from './group-request.service';
 import {
   FilteredGroupRequestsDto,
   PaginationGroupRequestsDto,
 } from './dto/filtered-group-requests';
+import { HasRole } from 'src/auth/decorator/has-role.decorator';
+import { Role } from 'src/auth/enums';
+import { RolesGuard } from 'src/auth/guard/role.guard';
 
+@UseGuards(JwtGuard, RolesGuard)
 @Controller('group-requests')
 export class GroupRequestController {
   constructor(private requestService: GroupRequestService) {}
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Admin)
   @Get()
   getAllRequests(
     @Query() paginationGroupRequestDto: PaginationGroupRequestsDto,
@@ -32,7 +36,7 @@ export class GroupRequestController {
     return this.requestService.getRequests(paginationGroupRequestDto);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Admin)
   @Get('filtered')
   getFilteredUsers(
     @Query() filterGroupRequestDto: FilteredGroupRequestsDto,
@@ -46,7 +50,7 @@ export class GroupRequestController {
     } else return this.requestService.getRequests(paginationGroupRequestDto);
   }
 
-  @UseGuards(JwtGuard)
+  // both roles
   @Get(':id')
   getRequestById(
     @GetUser('id') userId: number,
@@ -55,7 +59,7 @@ export class GroupRequestController {
     return this.requestService.getRequestById(userId, requestId);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Post()
   createGroupRequest(
     @GetUser('id') userId: number,
@@ -64,7 +68,7 @@ export class GroupRequestController {
     return this.requestService.createGroupRequest(userId, dto);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Delete('remove/:id')
   removeRequest(
     @GetUser('id') userId: number,
@@ -73,7 +77,7 @@ export class GroupRequestController {
     return this.requestService.removeRequest(userId, requestId);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Delete('decline/:id')
   declineRequest(
     @GetUser('id') userId: number,
@@ -82,7 +86,7 @@ export class GroupRequestController {
     return this.requestService.declineRequest(userId, requestId);
   }
 
-  @UseGuards(JwtGuard)
+  @HasRole(Role.Driver)
   @Post('accept')
   acceptGroupRequest(
     @GetUser('id') userId: number,

@@ -18,7 +18,7 @@ export class UserService {
         select: {
           id: true,
           email: true,
-          phone_number: true,
+          phone: true,
           lastName: true,
           firstName: true,
           age: true,
@@ -73,13 +73,13 @@ export class UserService {
                 mode: 'insensitive',
               },
             },
-            { phone_number: { contains: filterUserDto.phone_number } },
+            { phone: { contains: filterUserDto.phone } },
           ],
         },
         select: {
           id: true,
           email: true,
-          phone_number: true,
+          phone: true,
           lastName: true,
           firstName: true,
           age: true,
@@ -114,7 +114,7 @@ export class UserService {
         select: {
           id: true,
           email: true,
-          phone_number: true,
+          phone: true,
           lastName: true,
           firstName: true,
           age: true,
